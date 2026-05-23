@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    FileProvider path configuration for sharing generated PDF reports.
+
+    external-files-path maps to Context.getExternalFilesDir(null), which is
+    app-specific external storage (e.g. Android/data/com.example.scamshield/files/).
+    No READ_EXTERNAL_STORAGE or WRITE_EXTERNAL_STORAGE permissions are required
+    for app-specific directories on API 29+ (scoped storage).
+
+    The FileProvider authority is declared in AndroidManifest.xml as
+    "${applicationId}.fileprovider".
+-->
+<paths>
+    <external-files-path
+        name="reports"
+        path="Reports/" />
+</paths>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ── App ────────────────────────────────────────────────── -->
+    <string name="app_name">ScamShield</string>
+    <string name="accessibility_service_description">ScamShield reads on-screen text from Telegram, WhatsApp, SMS and Chrome to detect potential scam messages. Text is sent to the ScamShield analysis service to calculate a scam probability score. Only content from the listed apps is processed.</string>
+
+    <!-- ── Splash ─────────────────────────────────────────────── -->
+    <string name="splash_title">SCAMSHIELD</string>
+    <string name="splash_subtitle">AI-Powered Mobile Security</string>
+
+    <!-- ── Onboarding ─────────────────────────────────────────── -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_get_started">GET STARTED</string>
+    <string name="onboarding_continue">CONTINUE</string>
+    <string name="onboarding_page1_title">AI Scam Protection</string>
+    <string name="onboarding_page1_body">ScamShield monitors messages in real time from WhatsApp, Telegram, SMS and browsers, detecting phishing, OTP scams, fake banking messages and more.</string>
+    <string name="onboarding_page2_title">Instant Alerts</string>
+    <string name="onboarding_page2_body">When the AI engine detects a suspicious message, ScamShield displays a neon warning with a risk score, flagged keywords and plain-language explanations.</string>
+    <string name="onboarding_page3_title">Real-Time Monitoring</string>
+    <string name="onboarding_page3_body">The dashboard streams every scan in real time, and includes advanced analytics, daily charts, threat history and one-tap PDF reports.</string>
+    <string name="onboarding_page4_title">You\'re in Control</string>
+    <string name="onboarding_page4_body">Adjust sensitivity, scan modes, overlay behaviour and notifications any time. Your data never leaves the device except for analysis.</string>
+
+    <!-- ── Permissions Wizard ─────────────────────────────────── -->
+    <string name="perm_title">Almost Ready</string>
+    <string name="perm_subtitle">Grant permissions to enable real-time scam detection. You can skip and enable them later in Settings.</string>
+    <string name="perm_notification_title">Notification Access</string>
+    <string name="perm_notification_desc">Allows ScamShield to read incoming notifications from WhatsApp, Telegram and SMS for real-time scanning.</string>
+    <string name="perm_accessibility_title">Accessibility Service</string>
+    <string name="perm_accessibility_desc">Allows ScamShield to read on-screen messages from messengers and browsers when notifications miss them.</string>
+    <string name="perm_overlay_title">Display Over Other Apps</string>
+    <string name="perm_overlay_desc">Required to show a floating warning over a messenger when a scam is detected.</string>
+    <string name="perm_refresh">Refresh Status</string>
+    <string name="perm_skip">SKIP</string>
+    <string name="perm_enter">ENTER SCAMSHIELD</string>
+    <string name="perm_grant">GRANT</string>
+    <string name="perm_reopen">Open Settings</string>
+
+    <!-- ── Dashboard ──────────────────────────────────────────── -->
+    <string name="dashboard_title">SCAMSHIELD</string>
+    <string name="dashboard_subtitle">AI Cybersecurity Dashboard</string>
+    <string name="dashboard_active_protection">ACTIVE PROTECTION</string>
+    <string name="dashboard_standby">STANDBY MODE</string>
+    <string name="dashboard_ai_online_engines">AI online · %d monitoring engines</string>
+    <string name="dashboard_ai_online_waiting">AI online · waiting for services</string>
+    <string name="dashboard_connecting">Connecting to server…</string>
+    <string name="dashboard_backend_offline">Server offline · using local engine</string>
+    <string name="dashboard_initialising">Initialising engine</string>
+    <string name="dashboard_metric_scanned">scanned</string>
+    <string name="dashboard_metric_threats">threats</string>
+    <string name="dashboard_metric_high_risk">high risk</string>
+    <string name="dashboard_live_monitor">LIVE MONITOR</string>
+    <string name="dashboard_no_scan">No active scan. Waiting for incoming messages…</string>
+    <string name="dashboard_engine_idle">Engine idle · permissions or server may be needed.</string>
+    <string name="dashboard_recent_activity">RECENT ACTIVITY</string>
+    <string name="dashboard_permissions_needed">PERMISSIONS NEEDED</string>
+    <string name="dashboard_perm_notification_access">Notification Access</string>
+    <string name="dashboard_perm_accessibility_service">Accessibility Service</string>
+    <string name="dashboard_perm_overlay_apps">Display Over Apps</string>
+    <string name="dashboard_ai_engine">AI ENGINE</string>
+    <string name="dashboard_ai_desc">Neural network detector · phishing · OTP · banking schemes · social engineering · link scanner.</string>
+    <string name="dashboard_run_test">RUN AI TEST</string>
+    <string name="dashboard_recent_threats">RECENT THREATS</string>
+    <string name="dashboard_no_threats">No threats yet · stay safe.</string>
+
+    <!-- ── Scan status tags ───────────────────────────────────── -->
+    <string name="scan_status_scanning">SCANNING</string>
+    <string name="scan_status_analyzing">ANALYSING</string>
+    <string name="scan_status_safe">SAFE</string>
+    <string name="scan_status_threat">THREAT</string>
+    <string name="scan_status_error">ERROR</string>
+
+    <!-- ── AI connection state chips ─────────────────────────── -->
+    <string name="ai_state_online">ONLINE</string>
+    <string name="ai_state_connecting">CONNECTING</string>
+    <string name="ai_state_offline">OFFLINE</string>
+    <string name="ai_state_error">ERROR</string>
+    <string name="ai_state_idle">IDLE</string>
+
+    <!-- ── Stat tiles (shared across Dashboard + Analytics) ───── -->
+    <string name="stat_scanned">Scanned</string>
+    <string name="stat_threats">Threats</string>
+    <string name="stat_high_risk">High Risk</string>
+    <string name="stat_today">Today</string>
+    <string name="stat_detection">Detection</string>
+
+    <!-- ── Threat History ─────────────────────────────────────── -->
+    <string name="history_title">THREAT HISTORY</string>
+    <string name="history_clear">CLEAR</string>
+    <string name="history_record_count">%d records · tap to expand</string>
+    <string name="history_search_placeholder">Search messages or keywords…</string>
+    <string name="history_filter_all_risk">All risks</string>
+    <string name="history_filter_min_risk">≥ %s</string>
+    <string name="history_filter_all_apps">All apps</string>
+    <string name="history_section_keywords">KEYWORDS</string>
+    <string name="history_section_links">SUSPICIOUS LINKS</string>
+    <string name="history_section_urgency">URGENCY SIGNALS</string>
+    <string name="history_section_social">SOCIAL ENGINEERING</string>
+    <string name="history_section_ai">AI ANALYSIS</string>
+    <string name="history_delete">DELETE</string>
+    <string name="history_empty">No threats match the current filters.</string>
+
+    <!-- ── Analytics ──────────────────────────────────────────── -->
+    <string name="analytics_title">ANALYTICS</string>
+    <string name="analytics_subtitle">Threat analytics at a glance</string>
+    <string name="analytics_risk_distribution">RISK DISTRIBUTION</string>
+    <string name="analytics_last_7_days">LAST 7 DAYS</string>
+    <string name="analytics_last_6_weeks">LAST 6 WEEKS</string>
+    <string name="analytics_by_category">BY CATEGORY</string>
+    <string name="analytics_by_app">BY APP</string>
+    <string name="analytics_keyword_heatmap">KEYWORD HEATMAP</string>
+    <string name="analytics_no_category">No category data yet.</string>
+    <string name="analytics_no_apps">No app activity yet.</string>
+    <string name="analytics_no_keywords">No keywords detected yet.</string>
+    <string name="analytics_legend_high">HIGH</string>
+    <string name="analytics_legend_med">MED</string>
+    <string name="analytics_legend_low">LOW</string>
+    <string name="analytics_pdf_export">PDF EXPORT</string>
+    <string name="analytics_pdf_desc">Generate a shareable security report with your threat history.</string>
+    <string name="analytics_share_report">Share Report</string>
+    <string name="analytics_report_failed">Report error: %s</string>
+
+    <!-- ── Simulator ──────────────────────────────────────────── -->
+    <string name="simulator_title">SCAM SIMULATOR</string>
+    <string name="simulator_subtitle">Safe simulations through the live engine</string>
+    <string name="simulator_show_overlay">Show overlay during test</string>
+    <string name="simulator_overlay_requires">Requires SYSTEM_ALERT_WINDOW</string>
+    <string name="simulator_filter_all">All</string>
+    <string name="simulator_custom_attack">CUSTOM ATTACK</string>
+    <string name="simulator_sender_label">Sender</string>
+    <string name="simulator_message_label">Message</string>
+    <string name="simulator_launch">LAUNCH SIMULATION</string>
+    <string name="simulator_analysing">ANALYSING…</string>
+    <string name="simulator_result">RESULT</string>
+    <string name="simulator_reset">RESET</string>
+    <string name="simulator_run">RUN</string>
+    <string name="simulator_from_sender">From  %s</string>
+    <string name="simulator_category">Category: %s</string>
+    <string name="simulator_section_keywords">Keywords</string>
+    <string name="simulator_section_links">Suspicious Links</string>
+    <string name="simulator_section_urgency">Urgency Signals</string>
+    <string name="simulator_section_social">Social Engineering</string>
+
+    <!-- ── Settings ───────────────────────────────────────────── -->
+    <string name="settings_title">SETTINGS</string>
+    <string name="settings_active_protection">ACTIVE PROTECTION</string>
+    <string name="settings_realtime_monitoring">Real-time monitoring</string>
+    <string name="settings_realtime_monitoring_desc">Master switch for notification and accessibility service</string>
+    <string name="settings_auto_scan">Auto-scan messages</string>
+    <string name="settings_auto_scan_desc">Automatically analyse every captured message</string>
+    <string name="settings_sensitivity">DETECTION SENSITIVITY</string>
+    <string name="settings_sensitivity_info">Overlay threshold %1$d%%   ·   Notification threshold %2$d%%</string>
+    <string name="settings_scan_mode">AI SCAN MODE</string>
+    <string name="settings_notifications">NOTIFICATIONS</string>
+    <string name="settings_notif_enable">Enable notifications</string>
+    <string name="settings_notif_enable_desc">Show system notifications when a scam is detected</string>
+    <string name="settings_notif_sound">Sound</string>
+    <string name="settings_notif_sound_desc">Play a sound on threat</string>
+    <string name="settings_notif_vibrate">Vibrate</string>
+    <string name="settings_notif_vibrate_desc">Vibrate on threat</string>
+    <string name="settings_overlay_warnings">OVERLAY WARNINGS</string>
+    <string name="settings_overlay_enable">Show floating overlay</string>
+    <string name="settings_overlay_enable_desc">Displays warnings over other apps</string>
+    <string name="settings_overlay_auto_dismiss">Auto-dismiss after %ds</string>
+    <string name="settings_appearance">APPEARANCE</string>
+    <string name="settings_darkmode_system_title">System theme</string>
+    <string name="settings_darkmode_system_desc">Follow system light/dark setting</string>
+    <string name="settings_darkmode_dark_title">Material Dark</string>
+    <string name="settings_darkmode_dark_desc">Use Material dark colours</string>
+    <string name="settings_darkmode_cyber_title">Cyber Neon (default)</string>
+    <string name="settings_darkmode_cyber_desc">Always-on cybersecurity palette</string>
+    <string name="settings_backend">SERVER</string>
+    <string name="settings_backend_url">Server URL</string>
+    <string name="settings_save">SAVE</string>
+    <string name="settings_about">ABOUT</string>
+    <string name="settings_about_version">ScamShield · v1.0</string>
+    <string name="settings_about_desc">AI scam detection · always-on protection · local pattern engine combined with FastAPI inference.</string>
+
+    <!-- ── Overlay position ───────────────────────────────────── -->
+    <string name="overlay_position_top">TOP</string>
+    <string name="overlay_position_center">CENTER</string>
+    <string name="overlay_position_bottom">BOTTOM</string>
+
+    <!-- ── Nav tabs ───────────────────────────────────────────── -->
+    <string name="tab_dashboard">Dashboard</string>
+    <string name="tab_history">History</string>
+    <string name="tab_analytics">Analytics</string>
+    <string name="tab_simulator">Simulator</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- ── Risk levels ────────────────────────────────────────── -->
+    <string name="risk_safe">Safe</string>
+    <string name="risk_low">Low</string>
+    <string name="risk_medium">Medium</string>
+    <string name="risk_high">High</string>
+    <string name="risk_critical">Critical</string>
+
+    <!-- ── Threat categories ──────────────────────────────────── -->
+    <string name="category_phishing">Phishing</string>
+    <string name="category_otp_scam">OTP Scam</string>
+    <string name="category_fake_banking">Fake Banking</string>
+    <string name="category_social_engineering">Social Engineering</string>
+    <string name="category_urgency_bait">Urgency Bait</string>
+    <string name="category_link_trap">Link Trap</string>
+    <string name="category_other">Other Scam</string>
+
+    <!-- ── Sensitivity levels ─────────────────────────────────── -->
+    <string name="sensitivity_low">Low</string>
+    <string name="sensitivity_balanced">Balanced</string>
+    <string name="sensitivity_high">High</string>
+    <string name="sensitivity_paranoid">Paranoid</string>
+
+    <!-- ── Scan modes ─────────────────────────────────────────── -->
+    <string name="scan_mode_backend">Backend AI</string>
+    <string name="scan_mode_backend_desc">Only flag what the AI server considers a scam</string>
+    <string name="scan_mode_local">Local engine</string>
+    <string name="scan_mode_local_desc">Use only local pattern detectors (offline)</string>
+    <string name="scan_mode_hybrid">Hybrid</string>
+    <string name="scan_mode_hybrid_desc">Backend AI + local detectors (recommended)</string>
+
+    <!-- ── Simulator scam types ───────────────────────────────── -->
+    <string name="sim_type_phishing">Phishing</string>
+    <string name="sim_type_otp">OTP Scam</string>
+    <string name="sim_type_fake_support">Fake Support</string>
+    <string name="sim_type_fake_banking">Fake Banking</string>
+    <string name="sim_type_delivery">Delivery</string>
+    <string name="sim_type_lottery">Lottery</string>
+    <string name="sim_type_crypto">Crypto</string>
+    <string name="sim_type_romance">Romance</string>
+    <string name="sim_type_urgent">Urgent Alert</string>
+
+    <!-- ── Report export card ─────────────────────────────────── -->
+    <string name="report_export_title">PDF REPORT EXPORT</string>
+    <string name="report_export_subtitle">Generate a security threat report</string>
+    <string name="report_scope">REPORT SCOPE</string>
+    <string name="report_threat_summary">%1$d of %2$d threats · %3$d messages scanned</string>
+    <string name="report_no_threats_filter">No threats found for this filter.</string>
+    <string name="report_generating">GENERATING…</string>
+    <string name="report_generate_pdf">GENERATE PDF</string>
+    <string name="report_share">SHARE</string>
+    <string name="report_saved">✓ Saved: %s</string>
+    <string name="report_share_chooser">Share security report</string>
+    <string name="report_email_subject">ScamShield Security Report</string>
+    <string name="report_count_threats">%d threats</string>
+    <string name="report_generate_failed">Error: %s</string>
+    <string name="report_filter_all">All Threats</string>
+    <string name="report_filter_all_desc">Export complete threat history</string>
+    <string name="report_filter_high_risk">High Risk Only</string>
+    <string name="report_filter_high_risk_desc">Threats with probability > 70%%</string>
+    <string name="report_filter_24h">Last 24 Hours</string>
+    <string name="report_filter_24h_desc">Recent threats from today</string>
+
+    <!-- ── Overlay alert card ─────────────────────────────────── -->
+    <string name="overlay_scam_detected">SCAM DETECTED</string>
+    <string name="overlay_suspicious_message">SUSPICIOUS MESSAGE</string>
+    <string name="overlay_risk_score">RISK SCORE</string>
+    <string name="overlay_from">FROM</string>
+    <string name="overlay_flagged_keywords">FLAGGED KEYWORDS</string>
+    <string name="overlay_dismiss">DISMISS</string>
+
+    <!-- ── Shared component labels ────────────────────────────── -->
+    <string name="label_risk_score">RISK SCORE</string>
+
+    <!-- ── Date range filters ─────────────────────────────────── -->
+    <string name="date_range_all_time">All time</string>
+    <string name="date_range_today">Today</string>
+    <string name="date_range_week">This week</string>
+    <string name="date_range_month">This month</string>
+
+    <!-- ── Call Protection tab ────────────────────────────────── -->
+    <string name="tab_calls">Calls</string>
+    <string name="call_header_title">Call Protection</string>
+    <string name="call_header_active_safe">ACTIVE · NO THREATS</string>
+    <string name="call_header_active_dangerous">ACTIVE · THREATS DETECTED</string>
+    <string name="call_header_subline">%d numbers blocked · live analysis</string>
+
+    <string name="call_stat_today">Today</string>
+    <string name="call_stat_today_threats">Daily threats</string>
+    <string name="call_stat_total">Screened</string>
+    <string name="call_stat_blocked">Blocked</string>
+
+    <string name="call_top_scammers_title">TOP SCAMMERS</string>
+    <string name="call_top_scammers_subtitle">Worst offenders by risk and frequency</string>
+    <string name="call_top_scammers_empty">No scam calls detected yet.</string>
+    <string name="call_top_scammers_count">%d calls</string>
+
+    <string name="call_history_title">CALL HISTORY</string>
+    <string name="call_history_count">%d records</string>
+    <string name="call_history_empty">No screened calls yet. ScamShield automatically analyses incoming calls.</string>
+
+    <string name="call_blocked_title">BLOCKED NUMBERS</string>
+    <string name="call_blocked_count">%d numbers</string>
+    <string name="call_blocked_empty">No blocked numbers yet.</string>
+
+    <string name="call_action_block">Block</string>
+    <string name="call_action_unblock">Unblock</string>
+    <string name="call_action_mute">Mute</string>
+    <string name="call_action_copy">Copy</string>
+    <string name="call_action_report">Report</string>
+
+    <!-- ── Call risk labels ───────────────────────────────────── -->
+    <string name="call_risk_trusted">Trusted</string>
+    <string name="call_risk_safe">Safe</string>
+    <string name="call_risk_low">Low</string>
+    <string name="call_risk_medium">Medium</string>
+    <string name="call_risk_high">High</string>
+    <string name="call_risk_critical">Critical</string>
+
+    <!-- ── Call overlay ───────────────────────────────────────── -->
+    <string name="call_overlay_incoming_threat">INCOMING CALL THREAT</string>
+    <string name="call_overlay_suspicious_call">SUSPICIOUS CALL</string>
+    <string name="call_overlay_scam_probability">SCAM PROBABILITY</string>
+    <string name="call_overlay_caller">CALLER</string>
+    <string name="call_overlay_number">NUMBER</string>
+    <string name="call_overlay_risk_level">RISK · %1$s</string>
+    <string name="call_overlay_why_dangerous">WHY THIS CALL IS DANGEROUS</string>
+    <string name="call_unknown_caller">Unknown caller</string>
+    <string name="call_trusted_contact">Trusted contact</string>
+
+    <!-- ── Call flag explanations (long form) ─────────────────── -->
+    <string name="call_flag_unknown_number">This number is not in your contacts.</string>
+    <string name="call_flag_repeated_unknown">The same unknown number has called you multiple times.</string>
+    <string name="call_flag_international_prefix">The call originates from outside your country code.</string>
+    <string name="call_flag_high_risk_prefix">This country code is associated with a high volume of scam calls.</string>
+    <string name="call_flag_short_number">Short number — often used for premium-rate scam lines.</string>
+    <string name="call_flag_fake_bank">Caller ID contains a banking brand — typical impersonation scheme.</string>
+    <string name="call_flag_scam_keyword">Caller ID contains scam keywords (police, tax, lottery).</string>
+    <string name="call_flag_robocall">Behaviour matches an automated call (e.g. "press 1").</string>
+    <string name="call_flag_short_duration">Past calls from this number ended within seconds — a sign of spam.</string>
+    <string name="call_flag_reported_number">Other users have flagged this number as a scam.</string>
+    <string name="call_flag_blocked_db">This number is on your block list.</string>
+    <string name="call_flag_no_caller_id">Number is hidden — a common scammer tactic.</string>
+
+    <!-- ── Call flag chips (short form) ───────────────────────── -->
+    <string name="call_flag_chip_unknown">Unknown</string>
+    <string name="call_flag_chip_repeat">Repeat</string>
+    <string name="call_flag_chip_intl">Intl.</string>
+    <string name="call_flag_chip_risk_prefix">Risk Code</string>
+    <string name="call_flag_chip_short">Short</string>
+    <string name="call_flag_chip_bank">Fake Bank</string>
+    <string name="call_flag_chip_scam">Scam</string>
+    <string name="call_flag_chip_robocall">Robo</string>
+    <string name="call_flag_chip_duration">Spam Ping</string>
+    <string name="call_flag_chip_reported">Reported</string>
+    <string name="call_flag_chip_blocked">Blocked</string>
+    <string name="call_flag_chip_hidden">Hidden</string>
+
+    <!-- ── Call analyser explanations ─────────────────────────── -->
+    <string name="call_explain_no_signals">No suspicious signals detected.</string>
+    <string name="call_explain_blocked">You previously blocked this number. ScamShield automatically rejected the call.</string>
+    <string name="call_explain_trusted">This number is in your trusted contacts list.</string>
+    <string name="call_explain_lead">The following risk indicators were found for %1$s:</string>
+
+    <!-- ── Foreground service notification ───────────────────── -->
+    <string name="notif_channel_name">ScamShield Protection</string>
+    <string name="notif_channel_description">Persistent ScamShield message-monitoring indicator.</string>
+    <string name="notif_protection_active">ScamShield protection active</string>
+    <string name="notif_monitoring_text">Monitoring messages for scams in real time.</string>
+</resources>

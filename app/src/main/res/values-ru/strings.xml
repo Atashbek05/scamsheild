@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ── App ────────────────────────────────────────────────── -->
+    <string name="app_name">ScamShield</string>
+    <string name="accessibility_service_description">ScamShield считывает текст с экрана из Telegram, WhatsApp, SMS и Chrome для обнаружения потенциальных мошеннических сообщений. Текст передаётся в сервис анализа ScamShield для расчёта вероятности мошенничества. Обрабатывается только контент из указанных приложений.</string>
+
+    <!-- ── Splash ─────────────────────────────────────────────── -->
+    <string name="splash_title">SCAMSHIELD</string>
+    <string name="splash_subtitle">Мобильная безопасность на базе ИИ</string>
+
+    <!-- ── Onboarding ─────────────────────────────────────────── -->
+    <string name="onboarding_skip">Пропустить</string>
+    <string name="onboarding_get_started">НАЧАТЬ</string>
+    <string name="onboarding_continue">ДАЛЕЕ</string>
+    <string name="onboarding_page1_title">Защита от мошенников с ИИ</string>
+    <string name="onboarding_page1_body">ScamShield в режиме реального времени отслеживает сообщения из WhatsApp, Telegram, SMS и браузера, обнаруживая фишинг, OTP-мошенничество, поддельные банковские сообщения и многое другое.</string>
+    <string name="onboarding_page2_title">Мгновенные предупреждения</string>
+    <string name="onboarding_page2_body">Когда движок ИИ обнаруживает подозрительное сообщение, ScamShield показывает неоновое предупреждение с оценкой риска, ключевыми словами и понятными объяснениями.</string>
+    <string name="onboarding_page3_title">Мониторинг в реальном времени</string>
+    <string name="onboarding_page3_body">Дашборд транслирует каждое сканирование в режиме реального времени, а также содержит расширенную аналитику, ежедневные графики, историю угроз и PDF-отчёты в одно нажатие.</string>
+    <string name="onboarding_page4_title">Вы под контролем</string>
+    <string name="onboarding_page4_body">Настраивайте чувствительность, режимы сканирования, поведение оверлея и уведомления в любое время. Ваши данные никогда не покидают устройство, кроме как для анализа.</string>
+
+    <!-- ── Permissions Wizard ─────────────────────────────────── -->
+    <string name="perm_title">Почти готово</string>
+    <string name="perm_subtitle">Предоставьте разрешения для включения обнаружения мошенников в реальном времени. Вы можете пропустить и включить их позже в настройках.</string>
+    <string name="perm_notification_title">Доступ к уведомлениям</string>
+    <string name="perm_notification_desc">Позволяет ScamShield читать входящие уведомления из WhatsApp, Telegram и SMS для сканирования в режиме реального времени.</string>
+    <string name="perm_accessibility_title">Служба специальных возможностей</string>
+    <string name="perm_accessibility_desc">Позволяет ScamShield читать сообщения на экране из мессенджеров и браузера, когда уведомления их пропускают.</string>
+    <string name="perm_overlay_title">Отображение поверх других приложений</string>
+    <string name="perm_overlay_desc">Требуется для показа плавающего предупреждения поверх мессенджера при обнаружении мошенничества.</string>
+    <string name="perm_refresh">Обновить статус</string>
+    <string name="perm_skip">ПРОПУСТИТЬ</string>
+    <string name="perm_enter">ВОЙТИ В SCAMSHIELD</string>
+    <string name="perm_grant">РАЗРЕШИТЬ</string>
+    <string name="perm_reopen">Открыть настройки</string>
+
+    <!-- ── Dashboard ──────────────────────────────────────────── -->
+    <string name="dashboard_title">SCAMSHIELD</string>
+    <string name="dashboard_subtitle">Дашборд кибербезопасности ИИ</string>
+    <string name="dashboard_active_protection">АКТИВНАЯ ЗАЩИТА</string>
+    <string name="dashboard_standby">РЕЖИМ ОЖИДАНИЯ</string>
+    <string name="dashboard_ai_online_engines">ИИ онлайн · %d движка мониторинга</string>
+    <string name="dashboard_ai_online_waiting">ИИ онлайн · ожидание сервисов</string>
+    <string name="dashboard_connecting">Подключение к серверу…</string>
+    <string name="dashboard_backend_offline">Сервер недоступен · используется локальный движок</string>
+    <string name="dashboard_initialising">Инициализация движка</string>
+    <string name="dashboard_metric_scanned">проверено</string>
+    <string name="dashboard_metric_threats">угрозы</string>
+    <string name="dashboard_metric_high_risk">высокий риск</string>
+    <string name="dashboard_live_monitor">LIVE-МОНИТОР</string>
+    <string name="dashboard_no_scan">Нет активного сканирования. Ожидание входящих сообщений…</string>
+    <string name="dashboard_engine_idle">Движок неактивен · могут потребоваться разрешения или сервер.</string>
+    <string name="dashboard_recent_activity">ПОСЛЕДНЯЯ АКТИВНОСТЬ</string>
+    <string name="dashboard_permissions_needed">ТРЕБУЮТСЯ РАЗРЕШЕНИЯ</string>
+    <string name="dashboard_perm_notification_access">Доступ к уведомлениям</string>
+    <string name="dashboard_perm_accessibility_service">Служба специальных возможностей</string>
+    <string name="dashboard_perm_overlay_apps">Отображение поверх приложений</string>
+    <string name="dashboard_ai_engine">ДВИЖОК ИИ</string>
+    <string name="dashboard_ai_desc">Нейросетевой детектор · фишинг · OTP · банковские схемы · социальная инженерия · сканер ссылок.</string>
+    <string name="dashboard_run_test">ЗАПУСТИТЬ ТЕСТ ИИ</string>
+    <string name="dashboard_recent_threats">ПОСЛЕДНИЕ УГРОЗЫ</string>
+    <string name="dashboard_no_threats">Угроз пока нет · оставайтесь в безопасности.</string>
+
+    <!-- ── Scan status tags ───────────────────────────────────── -->
+    <string name="scan_status_scanning">СКАНИРОВАНИЕ</string>
+    <string name="scan_status_analyzing">АНАЛИЗ</string>
+    <string name="scan_status_safe">БЕЗОПАСНО</string>
+    <string name="scan_status_threat">УГРОЗА</string>
+    <string name="scan_status_error">ОШИБКА</string>
+
+    <!-- ── AI connection state chips ─────────────────────────── -->
+    <string name="ai_state_online">ОНЛАЙН</string>
+    <string name="ai_state_connecting">ПОДКЛЮЧЕНИЕ</string>
+    <string name="ai_state_offline">ОФЛАЙН</string>
+    <string name="ai_state_error">ОШИБКА</string>
+    <string name="ai_state_idle">ОЖИДАНИЕ</string>
+
+    <!-- ── Stat tiles ─────────────────────────────────────────── -->
+    <string name="stat_scanned">Проверено</string>
+    <string name="stat_threats">Угрозы</string>
+    <string name="stat_high_risk">Высокий риск</string>
+    <string name="stat_today">Сегодня</string>
+    <string name="stat_detection">Обнаружение</string>
+
+    <!-- ── Threat History ─────────────────────────────────────── -->
+    <string name="history_title">ИСТОРИЯ УГРОЗ</string>
+    <string name="history_clear">ОЧИСТИТЬ</string>
+    <string name="history_record_count">%d записей · нажмите для раскрытия</string>
+    <string name="history_search_placeholder">Поиск сообщений или ключевых слов…</string>
+    <string name="history_filter_all_risk">Все риски</string>
+    <string name="history_filter_min_risk">≥ %s</string>
+    <string name="history_filter_all_apps">Все приложения</string>
+    <string name="history_section_keywords">КЛЮЧЕВЫЕ СЛОВА</string>
+    <string name="history_section_links">ПОДОЗРИТЕЛЬНЫЕ ССЫЛКИ</string>
+    <string name="history_section_urgency">СИГНАЛЫ СРОЧНОСТИ</string>
+    <string name="history_section_social">СОЦИАЛЬНАЯ ИНЖЕНЕРИЯ</string>
+    <string name="history_section_ai">АНАЛИЗ ИИ</string>
+    <string name="history_delete">УДАЛИТЬ</string>
+    <string name="history_empty">Угрозы не соответствуют текущим фильтрам.</string>
+
+    <!-- ── Analytics ──────────────────────────────────────────── -->
+    <string name="analytics_title">АНАЛИТИКА</string>
+    <string name="analytics_subtitle">Аналитика угроз с первого взгляда</string>
+    <string name="analytics_risk_distribution">РАСПРЕДЕЛЕНИЕ РИСКОВ</string>
+    <string name="analytics_last_7_days">ПОСЛЕДНИЕ 7 ДНЕЙ</string>
+    <string name="analytics_last_6_weeks">ПОСЛЕДНИЕ 6 НЕДЕЛЬ</string>
+    <string name="analytics_by_category">ПО КАТЕГОРИЯМ</string>
+    <string name="analytics_by_app">ПО ПРИЛОЖЕНИЯМ</string>
+    <string name="analytics_keyword_heatmap">ТЕПЛОВАЯ КАРТА КЛЮЧЕВЫХ СЛОВ</string>
+    <string name="analytics_no_category">Данных по категориям пока нет.</string>
+    <string name="analytics_no_apps">Активности приложений пока нет.</string>
+    <string name="analytics_no_keywords">Ключевые слова ещё не обнаружены.</string>
+    <string name="analytics_legend_high">ВЫСОК.</string>
+    <string name="analytics_legend_med">СРЕДН.</string>
+    <string name="analytics_legend_low">НИЗК.</string>
+    <string name="analytics_pdf_export">PDF ЭКСПОРТ</string>
+    <string name="analytics_pdf_desc">Создайте отчёт по безопасности с историей угроз, которым можно поделиться.</string>
+    <string name="analytics_share_report">Поделиться отчётом</string>
+    <string name="analytics_report_failed">Ошибка отчёта: %s</string>
+
+    <!-- ── Simulator ──────────────────────────────────────────── -->
+    <string name="simulator_title">СИМУЛЯТОР МОШЕННИЧЕСТВА</string>
+    <string name="simulator_subtitle">Безопасные симуляции через живой движок</string>
+    <string name="simulator_show_overlay">Показывать оверлей во время теста</string>
+    <string name="simulator_overlay_requires">Требуется SYSTEM_ALERT_WINDOW</string>
+    <string name="simulator_filter_all">Все</string>
+    <string name="simulator_custom_attack">НАСТРАИВАЕМАЯ АТАКА</string>
+    <string name="simulator_sender_label">Отправитель</string>
+    <string name="simulator_message_label">Сообщение</string>
+    <string name="simulator_launch">ЗАПУСТИТЬ СИМУЛЯЦИЮ</string>
+    <string name="simulator_analysing">АНАЛИЗ…</string>
+    <string name="simulator_result">РЕЗУЛЬТАТ</string>
+    <string name="simulator_reset">СБРОС</string>
+    <string name="simulator_run">ЗАПУСК</string>
+    <string name="simulator_from_sender">От  %s</string>
+    <string name="simulator_category">Категория: %s</string>
+    <string name="simulator_section_keywords">Ключевые слова</string>
+    <string name="simulator_section_links">Подозрительные ссылки</string>
+    <string name="simulator_section_urgency">Сигналы срочности</string>
+    <string name="simulator_section_social">Социальная инженерия</string>
+
+    <!-- ── Settings ───────────────────────────────────────────── -->
+    <string name="settings_title">НАСТРОЙКИ</string>
+    <string name="settings_active_protection">АКТИВНАЯ ЗАЩИТА</string>
+    <string name="settings_realtime_monitoring">Мониторинг в реальном времени</string>
+    <string name="settings_realtime_monitoring_desc">Главный переключатель уведомлений и службы специальных возможностей</string>
+    <string name="settings_auto_scan">Автосканирование сообщений</string>
+    <string name="settings_auto_scan_desc">Автоматически анализировать каждое захваченное сообщение</string>
+    <string name="settings_sensitivity">ЧУВСТВИТЕЛЬНОСТЬ ОБНАРУЖЕНИЯ</string>
+    <string name="settings_sensitivity_info">Порог оверлея %1$d%%   ·   Порог уведомления %2$d%%</string>
+    <string name="settings_scan_mode">РЕЖИМ СКАНИРОВАНИЯ ИИ</string>
+    <string name="settings_notifications">УВЕДОМЛЕНИЯ</string>
+    <string name="settings_notif_enable">Включить уведомления</string>
+    <string name="settings_notif_enable_desc">Показывать системные уведомления при обнаружении мошенничества</string>
+    <string name="settings_notif_sound">Звук</string>
+    <string name="settings_notif_sound_desc">Воспроизводить звук при угрозе</string>
+    <string name="settings_notif_vibrate">Вибрация</string>
+    <string name="settings_notif_vibrate_desc">Вибрировать при угрозе</string>
+    <string name="settings_overlay_warnings">ПРЕДУПРЕЖДЕНИЯ ОВЕРЛЕЯ</string>
+    <string name="settings_overlay_enable">Показывать плавающий оверлей</string>
+    <string name="settings_overlay_enable_desc">Отображает предупреждения поверх других приложений</string>
+    <string name="settings_overlay_auto_dismiss">Автозакрытие через %dс</string>
+    <string name="settings_appearance">ВНЕШНИЙ ВИД</string>
+    <string name="settings_darkmode_system_title">Системная тема</string>
+    <string name="settings_darkmode_system_desc">Следовать системным настройкам светлой/тёмной темы</string>
+    <string name="settings_darkmode_dark_title">Тёмная Material</string>
+    <string name="settings_darkmode_dark_desc">Использовать тёмные цвета Material</string>
+    <string name="settings_darkmode_cyber_title">Кибер-неон (по умолчанию)</string>
+    <string name="settings_darkmode_cyber_desc">Постоянная палитра кибербезопасности</string>
+    <string name="settings_backend">СЕРВЕР</string>
+    <string name="settings_backend_url">URL сервера</string>
+    <string name="settings_save">СОХРАНИТЬ</string>
+    <string name="settings_about">О ПРИЛОЖЕНИИ</string>
+    <string name="settings_about_version">ScamShield · v1.0</string>
+    <string name="settings_about_desc">Обнаружение мошенничества с ИИ · постоянная защита · локальный движок паттернов в сочетании с FastAPI инференсом.</string>
+
+    <!-- ── Overlay position ───────────────────────────────────── -->
+    <string name="overlay_position_top">ВЕРХ</string>
+    <string name="overlay_position_center">ЦЕНТР</string>
+    <string name="overlay_position_bottom">НИЗ</string>
+
+    <!-- ── Nav tabs ───────────────────────────────────────────── -->
+    <string name="tab_dashboard">Дашборд</string>
+    <string name="tab_history">История</string>
+    <string name="tab_analytics">Аналитика</string>
+    <string name="tab_simulator">Симулятор</string>
+    <string name="tab_settings">Настройки</string>
+
+    <!-- ── Risk levels ────────────────────────────────────────── -->
+    <string name="risk_safe">Безопасно</string>
+    <string name="risk_low">Низкий</string>
+    <string name="risk_medium">Средний</string>
+    <string name="risk_high">Высокий</string>
+    <string name="risk_critical">Критический</string>
+
+    <!-- ── Threat categories ──────────────────────────────────── -->
+    <string name="category_phishing">Фишинг</string>
+    <string name="category_otp_scam">OTP-мошенничество</string>
+    <string name="category_fake_banking">Поддельный банк</string>
+    <string name="category_social_engineering">Социальная инженерия</string>
+    <string name="category_urgency_bait">Срочная приманка</string>
+    <string name="category_link_trap">Ловушка ссылок</string>
+    <string name="category_other">Другое мошенничество</string>
+
+    <!-- ── Sensitivity levels ─────────────────────────────────── -->
+    <string name="sensitivity_low">Низкая</string>
+    <string name="sensitivity_balanced">Сбалансированная</string>
+    <string name="sensitivity_high">Высокая</string>
+    <string name="sensitivity_paranoid">Параноидальная</string>
+
+    <!-- ── Scan modes ─────────────────────────────────────────── -->
+    <string name="scan_mode_backend">Серверный ИИ</string>
+    <string name="scan_mode_backend_desc">Отмечать только то, что ИИ-сервер считает мошенничеством</string>
+    <string name="scan_mode_local">Локальный движок</string>
+    <string name="scan_mode_local_desc">Использовать только локальные детекторы паттернов (офлайн)</string>
+    <string name="scan_mode_hybrid">Гибридный</string>
+    <string name="scan_mode_hybrid_desc">Серверный ИИ + локальные детекторы (рекомендуется)</string>
+
+    <!-- ── Simulator scam types ───────────────────────────────── -->
+    <string name="sim_type_phishing">Фишинг</string>
+    <string name="sim_type_otp">OTP-мошенничество</string>
+    <string name="sim_type_fake_support">Фейковая поддержка</string>
+    <string name="sim_type_fake_banking">Фейковый банк</string>
+    <string name="sim_type_delivery">Доставка</string>
+    <string name="sim_type_lottery">Лотерея</string>
+    <string name="sim_type_crypto">Крипто</string>
+    <string name="sim_type_romance">Романтика</string>
+    <string name="sim_type_urgent">Срочное предупреждение</string>
+
+    <!-- ── Report export card ────────────────────────────────────────── -->
+    <string name="report_export_title">ЭКСПОРТ PDF ОТЧЁТА</string>
+    <string name="report_export_subtitle">Создать отчёт об угрозах безопасности</string>
+    <string name="report_scope">ОБЛАСТЬ ОТЧЁТА</string>
+    <string name="report_threat_summary">%1$d из %2$d угроз · %3$d сообщений проверено</string>
+    <string name="report_no_threats_filter">Угрозы по этому фильтру не найдены.</string>
+    <string name="report_generating">СОЗДАНИЕ…</string>
+    <string name="report_generate_pdf">СОЗДАТЬ PDF</string>
+    <string name="report_share">ПОДЕЛИТЬСЯ</string>
+    <string name="report_saved">✓ Сохранено: %s</string>
+    <string name="report_share_chooser">Поделиться отчётом по безопасности</string>
+    <string name="report_email_subject">Отчёт безопасности ScamShield</string>
+    <string name="report_count_threats">%d угроз</string>
+    <string name="report_generate_failed">Ошибка: %s</string>
+    <string name="report_filter_all">Все угрозы</string>
+    <string name="report_filter_all_desc">Экспорт полной истории угроз</string>
+    <string name="report_filter_high_risk">Только высокий риск</string>
+    <string name="report_filter_high_risk_desc">Угрозы с вероятностью > 70%%</string>
+    <string name="report_filter_24h">Последние 24 часа</string>
+    <string name="report_filter_24h_desc">Недавние угрозы за сегодня</string>
+
+    <!-- ── Overlay alert card ────────────────────────────────────────── -->
+    <string name="overlay_scam_detected">МОШЕННИЧЕСТВО ОБНАРУЖЕНО</string>
+    <string name="overlay_suspicious_message">ПОДОЗРИТЕЛЬНОЕ СООБЩЕНИЕ</string>
+    <string name="overlay_risk_score">ОЦЕНКА РИСКА</string>
+    <string name="overlay_from">ОТ</string>
+    <string name="overlay_flagged_keywords">КЛЮЧЕВЫЕ СЛОВА</string>
+    <string name="overlay_dismiss">ЗАКРЫТЬ</string>
+
+    <!-- ── Shared component labels ───────────────────────────────────── -->
+    <string name="label_risk_score">ОЦЕНКА РИСКА</string>
+
+    <!-- ── Date range filters ─────────────────────────────────── -->
+    <string name="date_range_all_time">Всё время</string>
+    <string name="date_range_today">Сегодня</string>
+    <string name="date_range_week">Эта неделя</string>
+    <string name="date_range_month">Этот месяц</string>
+
+    <!-- ── Call Protection tab ────────────────────────────────── -->
+    <string name="tab_calls">Звонки</string>
+    <string name="call_header_title">Защита от звонков</string>
+    <string name="call_header_active_safe">АКТИВНА · УГРОЗ НЕТ</string>
+    <string name="call_header_active_dangerous">АКТИВНА · ОБНАРУЖЕНЫ УГРОЗЫ</string>
+    <string name="call_header_subline">%d номеров в чёрном списке · живой анализ</string>
+
+    <string name="call_stat_today">Сегодня</string>
+    <string name="call_stat_today_threats">Угроз за день</string>
+    <string name="call_stat_total">Проверено</string>
+    <string name="call_stat_blocked">Заблокировано</string>
+
+    <string name="call_top_scammers_title">ТОП МОШЕННИКОВ</string>
+    <string name="call_top_scammers_subtitle">Худшие нарушители по риску и частоте</string>
+    <string name="call_top_scammers_empty">Мошеннические звонки пока не обнаружены.</string>
+    <string name="call_top_scammers_count">%d звонков</string>
+
+    <string name="call_history_title">ИСТОРИЯ ЗВОНКОВ</string>
+    <string name="call_history_count">%d записей</string>
+    <string name="call_history_empty">Проверенных звонков пока нет. ScamShield автоматически анализирует входящие.</string>
+
+    <string name="call_blocked_title">ЗАБЛОКИРОВАННЫЕ НОМЕРА</string>
+    <string name="call_blocked_count">%d номеров</string>
+    <string name="call_blocked_empty">Заблокированных номеров пока нет.</string>
+
+    <string name="call_action_block">Блок</string>
+    <string name="call_action_unblock">Разблокировать</string>
+    <string name="call_action_mute">Тишина</string>
+    <string name="call_action_copy">Копия</string>
+    <string name="call_action_report">Жалоба</string>
+
+    <!-- ── Call risk labels ───────────────────────────────────── -->
+    <string name="call_risk_trusted">Доверенный</string>
+    <string name="call_risk_safe">Безопасно</string>
+    <string name="call_risk_low">Низкий</string>
+    <string name="call_risk_medium">Средний</string>
+    <string name="call_risk_high">Высокий</string>
+    <string name="call_risk_critical">Критический</string>
+
+    <!-- ── Call overlay ───────────────────────────────────────── -->
+    <string name="call_overlay_incoming_threat">УГРОЗА ВХОДЯЩЕГО ЗВОНКА</string>
+    <string name="call_overlay_suspicious_call">ПОДОЗРИТЕЛЬНЫЙ ЗВОНОК</string>
+    <string name="call_overlay_scam_probability">ВЕРОЯТНОСТЬ МОШЕННИЧЕСТВА</string>
+    <string name="call_overlay_caller">АБОНЕНТ</string>
+    <string name="call_overlay_number">НОМЕР</string>
+    <string name="call_overlay_risk_level">РИСК · %1$s</string>
+    <string name="call_overlay_why_dangerous">ПОЧЕМУ ЭТОТ ЗВОНОК ОПАСЕН</string>
+    <string name="call_unknown_caller">Неизвестный абонент</string>
+    <string name="call_trusted_contact">Доверенный контакт</string>
+
+    <!-- ── Call flag explanations (long form) ─────────────────── -->
+    <string name="call_flag_unknown_number">Этого номера нет в ваших контактах.</string>
+    <string name="call_flag_repeated_unknown">Один и тот же неизвестный номер звонит вам неоднократно.</string>
+    <string name="call_flag_international_prefix">Звонок поступает из-за пределов вашего кода страны.</string>
+    <string name="call_flag_high_risk_prefix">Код страны связан с большим количеством мошеннических звонков.</string>
+    <string name="call_flag_short_number">Короткий номер — часто используется для платных мошеннических линий.</string>
+    <string name="call_flag_fake_bank">Идентификатор содержит банковский бренд — типичная схема обмана.</string>
+    <string name="call_flag_scam_keyword">Идентификатор содержит ключевые слова мошенников (полиция, налоги, лотерея).</string>
+    <string name="call_flag_robocall">Поведение совпадает с автоматическим звонком (например, «нажмите 1»).</string>
+    <string name="call_flag_short_duration">Прошлые звонки с этого номера заканчивались за секунды — признак спама.</string>
+    <string name="call_flag_reported_number">Другие пользователи отметили этот номер как мошеннический.</string>
+    <string name="call_flag_blocked_db">Этот номер находится в вашем чёрном списке.</string>
+    <string name="call_flag_no_caller_id">Номер скрыт — частый приём мошенников.</string>
+
+    <!-- ── Call flag chips (short form) ───────────────────────── -->
+    <string name="call_flag_chip_unknown">Неизв.</string>
+    <string name="call_flag_chip_repeat">Повтор</string>
+    <string name="call_flag_chip_intl">Загран.</string>
+    <string name="call_flag_chip_risk_prefix">Риск-код</string>
+    <string name="call_flag_chip_short">Короткий</string>
+    <string name="call_flag_chip_bank">Фейк-банк</string>
+    <string name="call_flag_chip_scam">Мошен.</string>
+    <string name="call_flag_chip_robocall">Робот</string>
+    <string name="call_flag_chip_duration">Спам-пинг</string>
+    <string name="call_flag_chip_reported">Жалоба</string>
+    <string name="call_flag_chip_blocked">Блок</string>
+    <string name="call_flag_chip_hidden">Скрыт</string>
+
+    <!-- ── Call analyser explanations ─────────────────────────── -->
+    <string name="call_explain_no_signals">Подозрительных признаков не обнаружено.</string>
+    <string name="call_explain_blocked">Вы ранее заблокировали этот номер. ScamShield автоматически отклонил звонок.</string>
+    <string name="call_explain_trusted">Этот номер в списке доверенных контактов.</string>
+    <string name="call_explain_lead">У %1$s обнаружены следующие индикаторы риска:</string>
+
+    <!-- ── Foreground service notification ───────────────────── -->
+    <string name="notif_channel_name">Защита ScamShield</string>
+    <string name="notif_channel_description">Постоянный индикатор мониторинга сообщений ScamShield.</string>
+    <string name="notif_protection_active">Защита ScamShield активна</string>
+    <string name="notif_monitoring_text">Мониторинг сообщений на мошенничество в режиме реального времени.</string>
+</resources>

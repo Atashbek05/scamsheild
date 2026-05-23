@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Declares the capabilities and scope of ScamShieldAccessibilityService.
+
+    android:accessibilityEventTypes
+        Which events the system delivers to our service.
+        - typeWindowContentChanged:     content inside an existing window changed (new message arrived)
+        - typeWindowStateChanged:       a new window/screen came into focus
+        - typeNotificationStateChanged: a toast-style notification was shown
+
+    android:canRetrieveWindowContent
+        Required to call event.source and traverse the view tree to read visible text.
+        Without this the service only receives the event metadata, not the content.
+
+    android:accessibilityFlags
+        - flagRetrieveInteractiveWindows: allows reading content from windows that
+          accept input (e.g. a chat window with a text field). Required for
+          TYPE_WINDOW_CONTENT_CHANGED to return a usable source node.
+
+    android:packageNames
+        Restricts delivery to only these packages, protecting user privacy and
+        reducing CPU overhead. Events from all other apps are dropped by the OS
+        before they reach this service.
+
+    android:notificationTimeout
+        Minimum delay (ms) between successive events of the same type to prevent flooding.
+        Further rate-limiting is handled by AnalysisCooldown in the service layer.
+
+    Legitimate use — scam detection only:
+        This service reads visible on-screen text from the listed messaging and
+        browser apps solely to forward it to the ScamShield backend for scam
+        probability analysis. No other app data is accessed or retained.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeNotificationStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRetrieveInteractiveWindows"
+    android:canRetrieveWindowContent="true"
+    android:description="@string/accessibility_service_description"
+    android:notificationTimeout="100"
+    android:packageNames="org.telegram.messenger,org.telegram.messenger.web,com.whatsapp,com.whatsapp.w4b,com.google.android.apps.messaging,com.samsung.android.messaging,com.android.mms,com.android.messaging,com.android.chrome,com.chrome.beta,com.chrome.dev" />
