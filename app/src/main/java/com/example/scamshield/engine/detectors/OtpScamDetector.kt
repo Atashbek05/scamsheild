@@ -22,6 +22,22 @@ object OtpScamDetector {
         "give me the code"    to "Code exfiltration",
         "tell me the code"    to "Code exfiltration",
         "confirm with code"   to "Code confirm request",
+        // Russian patterns
+        "ваш код"              to "OTP request",
+        "код подтверждения"    to "Verification code request",
+        "смс-код"              to "OTP language",
+        "код из смс"           to "OTP language",
+        "никому не сообщайте"  to "Mimics legit OTP warning",
+        "не сообщайте код"     to "Mimics legit OTP warning",
+        "не называйте код"     to "Mimics legit OTP warning",
+        "введите код"          to "OTP entry request",
+        "пришлите код"         to "Code exfiltration",
+        "скажите код"          to "Code exfiltration",
+        "продиктуйте код"      to "Code exfiltration",
+        "сообщите код"         to "Code exfiltration",
+        "код действителен"     to "OTP claim",
+        "код действует"        to "OTP claim",
+        "одноразовый пароль"   to "OTP language",
     )
 
     /** True if the text contains a digit sequence that looks like an OTP (4–8 digits). */

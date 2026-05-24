@@ -6,21 +6,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scamshield.R
 import com.example.scamshield.ScamShieldApp
 import com.example.scamshield.data.RiskLevel
 import com.example.scamshield.data.db.ThreatEntity
 import com.example.scamshield.repository.ThreatRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ThreatHistoryViewModel(
     private val repo: ThreatRepository,
 ) : ViewModel() {
@@ -45,17 +45,9 @@ class ThreatHistoryViewModel(
     val packages: StateFlow<List<String>> = repo.observePackages()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val threats: StateFlow<List<ThreatEntity>> = _filters
-        .flatMapLatest { f ->
-            val since = f.range.sinceMillis?.let { System.currentTimeMillis() - it }
-            repo.search(
-                packageFilter = f.app,
-                minProbability = f.minRisk?.threshold,
-                since = since,
-                query = f.query.takeIf { it.isNotBlank() },
-            )
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val threats: Flow<PagingData<ThreatEntity>> = repo
+        .getThreatsPaged()
+        .cachedIn(viewModelScope)
 
     fun setQuery(value: String)         { _filters.value = _filters.value.copy(query = value) }
     fun setApp(value: String?)          { _filters.value = _filters.value.copy(app = value) }
@@ -65,6 +57,10 @@ class ThreatHistoryViewModel(
 
     fun deleteThreat(id: Long) {
         viewModelScope.launch { repo.delete(id) }
+    }
+
+    fun deleteOlderThan(days: Int) {
+        viewModelScope.launch { repo.deleteOlderThan(days) }
     }
 
     fun clearAll() {

@@ -2,12 +2,9 @@ package com.example.scamshield.ui.nav
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Analytics
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Dashboard
+import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.scamshield.R
 
@@ -17,10 +14,7 @@ object Routes {
     const val Permissions  = "permissions"
     const val Main         = "main"
     const val Dashboard    = "dashboard"
-    const val Calls        = "calls"
     const val History      = "history"
-    const val Analytics    = "analytics"
-    const val Simulator    = "simulator"
     const val Settings     = "settings"
     const val ThreatDetail = "threat_detail"
 }
@@ -31,10 +25,7 @@ enum class MainTab(
     val icon: ImageVector,
     @StringRes val labelRes: Int,
 ) {
-    Dashboard(Routes.Dashboard, "Dashboard",  Icons.Filled.Dashboard,  R.string.tab_dashboard),
-    Calls(Routes.Calls,         "Calls",      Icons.Filled.Call,       R.string.tab_calls),
-    History(Routes.History,     "History",    Icons.Filled.History,    R.string.tab_history),
-    Analytics(Routes.Analytics, "Analytics",  Icons.Filled.Analytics,  R.string.tab_analytics),
-    Simulator(Routes.Simulator, "Simulator",  Icons.Filled.BugReport,  R.string.tab_simulator),
-    Settings(Routes.Settings,   "Settings",   Icons.Filled.Settings,   R.string.tab_settings);
+    Dashboard(Routes.Dashboard, "Shield",   Icons.Rounded.Dashboard, R.string.tab_dashboard),
+    History  (Routes.History,   "History",  Icons.Rounded.History,   R.string.tab_history),
+    Settings (Routes.Settings,  "Settings", Icons.Rounded.Settings,  R.string.tab_settings),
 }

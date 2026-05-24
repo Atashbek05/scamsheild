@@ -32,6 +32,28 @@ object UrgencyDetector {
         "deadline"            to "Deadline reference",
         "final notice"        to "Final-notice threat",
         "final warning"       to "Final-warning threat",
+        // Russian patterns
+        "срочно"                   to "Urgency keyword",
+        "немедленно"               to "Urgency keyword",
+        "как можно скорее"         to "Urgency keyword",
+        "действуйте сейчас"        to "Urgency trigger",
+        "действуйте немедленно"    to "Urgency trigger",
+        "ограниченное время"       to "Time pressure",
+        "время истекает"           to "Time pressure",
+        "истекает срок"            to "Expiry pressure",
+        "истекает сегодня"         to "Expiry pressure",
+        "последний шанс"           to "Final deadline",
+        "только сегодня"           to "Today-only offer",
+        "только сейчас"            to "Today-only offer",
+        "в течение 24 часов"       to "24-hour deadline",
+        "в течение часа"           to "Sub-hour deadline",
+        "в течение 10 минут"       to "Sub-hour deadline",
+        "ответьте немедленно"      to "Immediate response demand",
+        "ответьте сейчас"          to "Immediate response demand",
+        "не медлите"               to "Delay warning",
+        "финальное предупреждение" to "Final-warning threat",
+        "последнее предупреждение" to "Final-warning threat",
+        "последнее уведомление"    to "Final-notice threat",
     )
 
     fun detect(lowerText: String): List<String> {

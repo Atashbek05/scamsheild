@@ -31,6 +31,22 @@ object FakeBankingDetector {
         "re-verify kyc"         to "Fake KYC request",
         "branch manager"        to "Fake branch impersonation",
         "ifsc"                  to "Indian-bank impersonation",
+        // Russian patterns
+        "счёт заблокирован"        to "Account-freeze threat",
+        "карта заблокирована"      to "Account-freeze threat",
+        "счет заблокирован"        to "Account-freeze threat",
+        "подозрительная операция"  to "Fake fraud alert",
+        "несанкционированный вход" to "Fake fraud alert",
+        "служба безопасности"      to "Fake security dept",
+        "отдел безопасности"       to "Fake security dept",
+        "перевод средств"          to "Funds-transfer demand",
+        "перевести средства"       to "Funds-transfer demand",
+        "ваша карта"               to "Card alert pretext",
+        "номер карты"              to "Card data harvest",
+        "cvv"                      to "Card data harvest",
+        "срок действия карты"      to "Card data harvest",
+        "кредитная карта"          to "Card-impersonation cue",
+        "дебетовая карта"          to "Card-impersonation cue",
     )
 
     /** Common bank names — used to mark messages that name-drop a bank. */
@@ -40,6 +56,14 @@ object FakeBankingDetector {
         "sbi", "hdfc", "icici", "axis bank", "kotak", "pnb",
         "deutsche bank", "ubs", "ing", "bnp paribas",
         "halyk", "kaspi", "forte bank", "bcc", "qazaq banki",
+        // Russian/CIS banks
+        "сбербанк", "сбер", "тинькофф", "tinkoff", "втб", "vtb",
+        "альфа-банк", "альфабанк", "alfabank", "газпромбанк",
+        "россельхозбанк", "открытие", "совкомбанк", "райффайзен",
+        "юникредит", "промсвязьбанк", "psb", "бинбанк", "росбанк",
+        "ак барс", "банк россия", "мкб", "ситибанк", "хоум кредит",
+        "ренессанс", "мтс банк", "почта банк", "казкоммерцбанк",
+        "jusan", "bereke",
     )
 
     fun detect(lowerText: String): List<String> {

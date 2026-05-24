@@ -1,6 +1,7 @@
 package com.example.scamshield.repository
 
 import android.util.Log
+import com.example.scamshield.util.logD
 import com.example.scamshield.model.ScamAnalysisRequest
 import com.example.scamshield.model.ScamAnalysisResponse
 import com.example.scamshield.network.ApiClient
@@ -24,6 +25,8 @@ import java.io.IOException
  *                    (includes Render.com cold-start timeouts on the first daily request)
  *   Exception      — Gson deserialisation failure or unexpected runtime error
  */
+class BackendUnavailableException(cause: Throwable) : Exception("Backend unavailable", cause)
+
 class ScamAnalysisRepository {
 
     companion object {
@@ -56,7 +59,7 @@ class ScamAnalysisRepository {
         // Log the outgoing request before suspending, so even a timeout shows what was sent.
         val preview = message.take(LOG_PREVIEW_LEN).replace('\n', ' ')
         val ellipsis = if (message.length > LOG_PREVIEW_LEN) "…" else ""
-        Log.d(
+        logD(
             TAG,
             "→ POST /analyze | pkg=$packageName | ${message.length} chars | \"$preview$ellipsis\"",
         )
@@ -65,7 +68,7 @@ class ScamAnalysisRepository {
             val response = api.analyzeText(ScamAnalysisRequest(message))
 
             // ── Success path ──────────────────────────────────────────────────
-            Log.d(
+            logD(
                 TAG,
                 "✓ /analyze | pkg=$packageName | " +
                     "prob=${"%.3f".format(response.scamProbability)} | " +
@@ -83,17 +86,8 @@ class ScamAnalysisRepository {
             Result.failure(e)
 
         } catch (e: IOException) {
-            // ── Network-level failure ─────────────────────────────────────────
-            // Covers: SocketTimeoutException (Render cold-start), UnknownHostException
-            // (no DNS / no internet), SSLException, ConnectionResetException, etc.
-            // If SocketTimeoutException fires on the first request of the day, consider
-            // raising READ_TIMEOUT_S in ApiClient — Render free-tier can take 60 s.
-            Log.e(
-                TAG,
-                "✗ Network error | pkg=$packageName | " +
-                    "${e.javaClass.simpleName}: ${e.message}",
-            )
-            Result.failure(e)
+            Log.e(TAG, "Backend unavailable: ${e.message}")
+            Result.failure(BackendUnavailableException(e))
 
         } catch (e: Exception) {
             // ── Catch-all ─────────────────────────────────────────────────────

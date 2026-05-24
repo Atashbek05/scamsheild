@@ -1,6 +1,7 @@
 package com.example.scamshield.ui.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -14,17 +15,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bolt
-import androidx.compose.material.icons.filled.Cloud
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.Cloud
+import androidx.compose.material.icons.rounded.DarkMode
+import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Psychology
+import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
@@ -41,16 +44,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.scamshield.R
 import com.example.scamshield.data.settings.DarkMode
+import com.example.scamshield.data.settings.HistoryRetention
 import com.example.scamshield.data.settings.OverlayPosition
 import com.example.scamshield.data.settings.ScanMode
 import com.example.scamshield.data.settings.Sensitivity
@@ -60,6 +64,7 @@ import com.example.scamshield.ui.theme.CyberBgDeep
 import com.example.scamshield.ui.theme.CyberBgSurface
 import com.example.scamshield.ui.theme.CyberCyan
 import com.example.scamshield.ui.theme.CyberGreen
+import com.example.scamshield.ui.theme.CyberTextMuted
 import com.example.scamshield.ui.theme.CyberTextPrimary
 import com.example.scamshield.ui.theme.CyberTextSecondary
 
@@ -76,27 +81,37 @@ fun SettingsScreen() {
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
-        Text(stringResource(R.string.settings_title), color = CyberTextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Black, letterSpacing = 3.sp)
-        Spacer(Modifier.height(14.dp))
+        Text(
+            stringResource(R.string.settings_title),
+            color         = CyberTextPrimary,
+            fontSize      = 20.sp,
+            fontWeight    = FontWeight.Bold,
+            letterSpacing = 0.sp,
+        )
+        Spacer(Modifier.height(16.dp))
 
-        SettingCard(icon = Icons.Filled.Shield, title = stringResource(R.string.settings_active_protection)) {
+        SettingSection(icon = Icons.Rounded.Shield, title = stringResource(R.string.settings_active_protection)) {
             ToggleRow(
-                label = stringResource(R.string.settings_realtime_monitoring),
+                label       = stringResource(R.string.settings_realtime_monitoring),
                 description = stringResource(R.string.settings_realtime_monitoring_desc),
-                value = settings.activeProtection,
-                onChange = vm::setActiveProtection,
+                value       = settings.activeProtection,
+                onChange    = vm::setActiveProtection,
             )
             ToggleRow(
-                label = stringResource(R.string.settings_auto_scan),
+                label       = stringResource(R.string.settings_auto_scan),
                 description = stringResource(R.string.settings_auto_scan_desc),
-                value = settings.autoScanEnabled,
-                onChange = vm::setAutoScanEnabled,
+                value       = settings.autoScanEnabled,
+                onChange    = vm::setAutoScanEnabled,
             )
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.Tune, title = stringResource(R.string.settings_sensitivity)) {
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        SettingSection(icon = Icons.Rounded.Tune, title = stringResource(R.string.settings_sensitivity)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Sensitivity.entries.forEach { s ->
                     ChoiceChip(stringResource(s.labelRes), settings.sensitivity == s) { vm.setSensitivity(s) }
                 }
@@ -108,55 +123,61 @@ fun SettingsScreen() {
                     (settings.sensitivity.overlayThreshold * 100).toInt(),
                     (settings.sensitivity.notifyThreshold * 100).toInt(),
                 ),
-                color = CyberTextSecondary, fontSize = 11.sp,
+                color    = CyberTextSecondary,
+                fontSize = 11.sp,
+                lineHeight = 15.sp,
             )
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.Psychology, title = stringResource(R.string.settings_scan_mode)) {
+        SettingSection(icon = Icons.Rounded.Psychology, title = stringResource(R.string.settings_scan_mode)) {
             ScanMode.entries.forEach { mode ->
                 RadioRow(
-                    selected = settings.scanMode == mode,
-                    title = stringResource(mode.labelRes),
+                    selected    = settings.scanMode == mode,
+                    title       = stringResource(mode.labelRes),
                     description = stringResource(mode.descriptionRes),
-                    onClick = { vm.setScanMode(mode) },
+                    onClick     = { vm.setScanMode(mode) },
                 )
             }
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.Notifications, title = stringResource(R.string.settings_notifications)) {
-            ToggleRow(stringResource(R.string.settings_notif_enable), stringResource(R.string.settings_notif_enable_desc), settings.notificationsEnabled, vm::setNotificationsEnabled)
-            ToggleRow(stringResource(R.string.settings_notif_sound), stringResource(R.string.settings_notif_sound_desc), settings.notificationSound, vm::setNotificationSound)
-            ToggleRow(stringResource(R.string.settings_notif_vibrate), stringResource(R.string.settings_notif_vibrate_desc), settings.notificationVibrate, vm::setNotificationVibrate)
+        SettingSection(icon = Icons.Rounded.Notifications, title = stringResource(R.string.settings_notifications)) {
+            ToggleRow(stringResource(R.string.settings_notif_enable),   stringResource(R.string.settings_notif_enable_desc),   settings.notificationsEnabled, vm::setNotificationsEnabled)
+            ToggleRow(stringResource(R.string.settings_notif_sound),    stringResource(R.string.settings_notif_sound_desc),    settings.notificationSound,    vm::setNotificationSound)
+            ToggleRow(stringResource(R.string.settings_notif_vibrate),  stringResource(R.string.settings_notif_vibrate_desc), settings.notificationVibrate,  vm::setNotificationVibrate)
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.WarningAmber, title = stringResource(R.string.settings_overlay_warnings)) {
+        SettingSection(icon = Icons.Rounded.Warning, title = stringResource(R.string.settings_overlay_warnings)) {
             ToggleRow(stringResource(R.string.settings_overlay_enable), stringResource(R.string.settings_overlay_enable_desc), settings.overlayEnabled, vm::setOverlayEnabled)
-            Spacer(Modifier.height(6.dp))
-            Text(stringResource(R.string.settings_overlay_auto_dismiss, settings.overlayAutoDismissSec), color = CyberTextSecondary, fontSize = 11.sp)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.settings_overlay_auto_dismiss, settings.overlayAutoDismissSec),
+                color    = CyberTextSecondary,
+                fontSize = 11.sp,
+            )
             Slider(
-                value = settings.overlayAutoDismissSec.toFloat(),
+                value         = settings.overlayAutoDismissSec.toFloat(),
                 onValueChange = { vm.setOverlayAutoDismiss(it.toInt()) },
-                valueRange = 3f..15f,
-                steps = 11,
-                colors = SliderDefaults.colors(
-                    thumbColor = CyberCyan,
-                    activeTrackColor = CyberCyan,
+                valueRange    = 3f..15f,
+                steps         = 11,
+                colors        = SliderDefaults.colors(
+                    thumbColor        = CyberCyan,
+                    activeTrackColor  = CyberCyan,
                     inactiveTrackColor = CyberBgSurface,
                 ),
             )
-            Spacer(Modifier.height(4.dp))
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 OverlayPosition.entries.forEach { pos ->
                     ChoiceChip(stringResource(pos.labelRes), settings.overlayPosition == pos) { vm.setOverlayPosition(pos) }
                 }
             }
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.DarkMode, title = stringResource(R.string.settings_appearance)) {
+        SettingSection(icon = Icons.Rounded.DarkMode, title = stringResource(R.string.settings_appearance)) {
             DarkMode.entries.forEach { m ->
                 RadioRow(
                     selected = settings.darkMode == m,
@@ -174,77 +195,130 @@ fun SettingsScreen() {
                 )
             }
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.Cloud, title = stringResource(R.string.settings_backend)) {
+        SettingSection(icon = Icons.Rounded.Cloud, title = stringResource(R.string.settings_backend)) {
             OutlinedTextField(
-                value = backendDraft,
+                value         = backendDraft,
                 onValueChange = { backendDraft = it },
-                label = { Text(stringResource(R.string.settings_backend_url), color = CyberTextSecondary, fontSize = 11.sp) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                colors = textFieldColors(),
+                label         = { Text(stringResource(R.string.settings_backend_url), color = CyberTextSecondary, fontSize = 11.sp) },
+                singleLine    = true,
+                modifier      = Modifier.fillMaxWidth(),
+                shape         = RoundedCornerShape(12.dp),
+                colors        = settingsFieldColors(),
             )
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Box(
                     Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(CyberCyan.copy(alpha = 0.15f))
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(CyberCyan.copy(alpha = 0.12f))
                         .clickable { vm.setBackendUrl(backendDraft) }
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                 ) {
-                    Text(stringResource(R.string.settings_save), color = CyberCyan, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                    Text(stringResource(R.string.settings_save), color = CyberCyan, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
                 }
             }
         }
-        Spacer(Modifier.height(14.dp))
 
-        SettingCard(icon = Icons.Filled.Bolt, title = stringResource(R.string.settings_about)) {
-            Text(stringResource(R.string.settings_about_version), color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(4.dp))
-            Text(stringResource(R.string.settings_about_desc), color = CyberTextSecondary, fontSize = 11.sp)
+        SettingSection(icon = Icons.Rounded.History, title = stringResource(R.string.settings_data)) {
+            Text(
+                stringResource(R.string.settings_history_retention),
+                color      = CyberTextPrimary,
+                fontSize   = 13.sp,
+                fontWeight = FontWeight.Medium,
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                HistoryRetention.entries.forEach { retention ->
+                    ChoiceChip(
+                        label    = stringResource(retention.labelRes),
+                        selected = settings.historyRetention == retention,
+                        onClick  = { vm.setHistoryRetention(retention) },
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                if (settings.historyRetention == HistoryRetention.FOREVER)
+                    stringResource(settings.historyRetention.descRes)
+                else
+                    stringResource(settings.historyRetention.descRes, settings.historyRetention.days),
+                color    = CyberTextSecondary,
+                fontSize = 11.sp,
+            )
         }
-        Spacer(Modifier.height(40.dp))
+
+        SettingSection(icon = Icons.Rounded.Bolt, title = stringResource(R.string.settings_about)) {
+            Text(stringResource(R.string.settings_about_version), color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(4.dp))
+            Text(stringResource(R.string.settings_about_desc), color = CyberTextSecondary, fontSize = 12.sp, lineHeight = 16.sp)
+        }
+
+        Spacer(Modifier.height(32.dp))
     }
 }
 
 @Composable
-private fun SettingCard(icon: ImageVector, title: String, content: @Composable () -> Unit) {
+private fun SettingSection(
+    icon: ImageVector,
+    title: String,
+    content: @Composable () -> Unit,
+) {
     CyberCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = CyberCyan, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.size(8.dp))
+            Box(
+                Modifier
+                    .size(32.dp)
+                    .background(CyberCyan.copy(alpha = 0.1f), CircleShape),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(icon, null, tint = CyberCyan, modifier = Modifier.size(16.dp))
+            }
+            Spacer(Modifier.size(10.dp))
             Text(
                 title,
-                color = CyberCyan, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 0.5.sp,
-                modifier = Modifier.weight(1f),
-                maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                color         = CyberTextPrimary,
+                fontWeight    = FontWeight.SemiBold,
+                fontSize      = 14.sp,
+                letterSpacing = 0.sp,
+                modifier      = Modifier.weight(1f),
+                maxLines      = 1,
+                overflow      = TextOverflow.Ellipsis,
             )
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(12.dp))
         content()
     }
+    Spacer(Modifier.height(10.dp))
 }
 
 @Composable
 private fun ToggleRow(label: String, description: String, value: Boolean, onChange: (Boolean) -> Unit) {
     Row(
-        Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            Text(label, color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text(label, color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
             Text(description, color = CyberTextSecondary, fontSize = 11.sp, lineHeight = 14.sp)
         }
+        Spacer(Modifier.size(12.dp))
         Switch(
-            checked = value,
+            checked        = value,
             onCheckedChange = onChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = CyberGreen,
-                checkedTrackColor = CyberGreen.copy(alpha = 0.35f),
-                uncheckedThumbColor = CyberTextSecondary,
-                uncheckedTrackColor = CyberBgCard,
+            colors         = SwitchDefaults.colors(
+                checkedThumbColor    = CyberBgDeep,
+                checkedTrackColor    = CyberGreen,
+                uncheckedThumbColor  = CyberTextSecondary,
+                uncheckedTrackColor  = CyberBgCard,
+                uncheckedBorderColor = CyberTextMuted,
             ),
         )
     }
@@ -263,15 +337,16 @@ private fun RadioRow(selected: Boolean, title: String, description: String, onCl
         Box(
             Modifier
                 .size(18.dp)
-                .clip(androidx.compose.foundation.shape.CircleShape)
-                .background(if (selected) CyberCyan else CyberBgCard),
+                .clip(CircleShape)
+                .background(if (selected) CyberCyan else CyberBgCard)
+                .border(1.5.dp, if (selected) CyberCyan else CyberTextMuted.copy(alpha = 0.4f), CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            if (selected) Box(Modifier.size(8.dp).background(CyberBgDeep, androidx.compose.foundation.shape.CircleShape))
+            if (selected) Box(Modifier.size(7.dp).background(CyberBgDeep, CircleShape))
         }
         Spacer(Modifier.size(10.dp))
         Column(Modifier.weight(1f)) {
-            Text(title, color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text(title, color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
             Text(description, color = CyberTextSecondary, fontSize = 11.sp, lineHeight = 14.sp)
         }
     }
@@ -279,20 +354,24 @@ private fun RadioRow(selected: Boolean, title: String, description: String, onCl
 
 @Composable
 private fun ChoiceChip(label: String, selected: Boolean, onClick: () -> Unit) {
-    val bg = if (selected) CyberCyan.copy(alpha = 0.18f) else CyberBgCard
     Box(
         Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(bg)
+            .clip(RoundedCornerShape(20.dp))
+            .background(if (selected) CyberCyan.copy(alpha = 0.15f) else CyberBgCard)
             .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp, vertical = 7.dp),
     ) {
-        Text(label, color = if (selected) CyberCyan else CyberTextSecondary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+        Text(
+            label,
+            color      = if (selected) CyberCyan else CyberTextSecondary,
+            fontSize   = 11.sp,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+        )
     }
 }
 
 @Composable
-private fun textFieldColors() = TextFieldDefaults.colors(
+private fun settingsFieldColors() = TextFieldDefaults.colors(
     focusedContainerColor   = CyberBgCard,
     unfocusedContainerColor = CyberBgCard,
     focusedTextColor        = CyberTextPrimary,
@@ -300,4 +379,6 @@ private fun textFieldColors() = TextFieldDefaults.colors(
     cursorColor             = CyberCyan,
     focusedIndicatorColor   = CyberCyan,
     unfocusedIndicatorColor = CyberBgSurface,
+    focusedLabelColor       = CyberCyan,
+    unfocusedLabelColor     = CyberTextSecondary,
 )

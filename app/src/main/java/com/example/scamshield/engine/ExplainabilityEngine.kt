@@ -1,6 +1,6 @@
 package com.example.scamshield.engine
 
-import android.util.Log
+import com.example.scamshield.util.logD
 import com.example.scamshield.data.AnalysisSource
 import com.example.scamshield.data.RiskLevel
 import com.example.scamshield.data.ThreatCategory
@@ -42,6 +42,7 @@ object ExplainabilityEngine {
         senderRaw: String,
         backendKeywords: List<String>,
         backendProbability: Float,
+        backendOffline: Boolean = false,
     ): Result {
         val lower = message.lowercase()
 
@@ -53,9 +54,13 @@ object ExplainabilityEngine {
         val linkRep   = LinkScanner.scan(message)
         val senderRep = SenderReputation.score(senderRaw)
 
+        // When backend is offline, don't use its probability as the base score —
+        // local detectors are the sole source and their boosts accumulate from 0.
+        val effectiveProbability = if (backendOffline) 0.0f else backendProbability
+
         val scored = ConfidenceScorer.score(
             ConfidenceScorer.Inputs(
-                backendProbability = backendProbability,
+                backendProbability = effectiveProbability,
                 linkFindings = linkRep.findings,
                 phishing = phishing,
                 otp = otp,
@@ -70,30 +75,36 @@ object ExplainabilityEngine {
         val mergedSocial  = (social + phishing + banking +
             senderRep.reasons.filter { !it.contains("ALL-CAPS") }).distinct()
 
-        val source = pickSource(backendKeywords, hasLocal = scored.signalCount > 0)
+        val source = if (backendOffline) AnalysisSource.LOCAL
+                     else pickSource(backendKeywords, hasLocal = scored.signalCount > 0)
+
+        val baseReason = buildReason(
+            category = scored.category,
+            risk = scored.riskLevel,
+            confidence = scored.confidence,
+            phishingCount = phishing.size,
+            otpCount = otp.size,
+            bankingCount = banking.size,
+            urgencyCount = urgency.size,
+            socialCount = social.size,
+            linkCount = linkRep.findings.size,
+            senderSuspicious = senderRep.tier == SenderReputation.Tier.SUSPICIOUS,
+        )
+        val overallReason = if (backendOffline)
+            "$baseReason AI офлайн — результат на основе локального анализа."
+        else baseReason
 
         val explanation = ThreatExplanation(
-            suspiciousKeywords          = backendKeywords,
+            suspiciousKeywords          = if (backendOffline) emptyList() else backendKeywords,
             phishingLinks               = linkRep.findings.map { it.display },
             urgencyPatterns             = mergedUrgency,
             socialEngineeringIndicators = mergedSocial,
             confidenceScore             = scored.confidence,
-            overallReason               = buildReason(
-                category = scored.category,
-                risk = scored.riskLevel,
-                confidence = scored.confidence,
-                phishingCount = phishing.size,
-                otpCount = otp.size,
-                bankingCount = banking.size,
-                urgencyCount = urgency.size,
-                socialCount = social.size,
-                linkCount = linkRep.findings.size,
-                senderSuspicious = senderRep.tier == SenderReputation.Tier.SUSPICIOUS,
-            ),
+            overallReason               = overallReason,
             analysisSource              = source,
         )
 
-        Log.d(
+        logD(
             TAG,
             "Analyzed | cat=${scored.category} risk=${scored.riskLevel} " +
                 "conf=${"%.2f".format(scored.confidence)} " +

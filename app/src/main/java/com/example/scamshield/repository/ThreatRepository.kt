@@ -1,6 +1,9 @@
 package com.example.scamshield.repository
 
 import android.content.Context
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.scamshield.data.DetectedThreat
 import com.example.scamshield.data.RiskLevel
 import com.example.scamshield.data.ThreatCategory
@@ -45,6 +48,16 @@ class ThreatRepository(private val dao: ThreatDao) {
         since: Long?,
         query: String?,
     ): Flow<List<ThreatEntity>> = dao.search(packageFilter, minProbability, since, query)
+
+    fun getThreatsPaged(): Flow<PagingData<ThreatEntity>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+        pagingSourceFactory = { dao.getAllThreatsPaged() },
+    ).flow
+
+    suspend fun deleteOlderThan(days: Int) {
+        val cutoff = System.currentTimeMillis() - days.toLong() * 24 * 60 * 60 * 1000
+        dao.deleteOlderThan(cutoff)
+    }
 
     suspend fun clearAll() = dao.deleteAll()
 

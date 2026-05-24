@@ -1,7 +1,7 @@
 package com.example.scamshield.engine.call
 
 import android.content.Context
-import android.util.Log
+import com.example.scamshield.util.logD
 import com.example.scamshield.R
 import com.example.scamshield.data.call.CallAnalysis
 import com.example.scamshield.data.call.CallFlag
@@ -45,7 +45,7 @@ class PhoneNumberAnalyzer(
                 flags        = listOf(CallFlag.NO_CALLER_ID, CallFlag.UNKNOWN_NUMBER),
                 isBlocked    = false,
                 isTrusted    = false,
-            ).also { Log.d(TAG, "Hidden caller ID → risk=${it.risk}") }
+            ).also { logD(TAG, "Hidden caller ID → risk=${it.risk}") }
         }
 
         val isBlocked = runCatching { repository.isBlocked(number) }.getOrDefault(false)
@@ -60,7 +60,7 @@ class PhoneNumberAnalyzer(
                 flags       = emptyList(),
                 explanation = context.getString(R.string.call_explain_trusted),
                 isTrusted   = true,
-            ).also { Log.d(TAG, "Trusted contact → bypass: $number") }
+            ).also { logD(TAG, "Trusted contact → bypass: $number") }
         }
 
         val flags = mutableListOf<CallFlag>()
@@ -105,7 +105,7 @@ class PhoneNumberAnalyzer(
             isBlocked   = isBlocked,
             isTrusted   = false,
         ).also {
-            Log.d(
+            logD(
                 TAG,
                 "Analysed call → number=$number prob=${"%.2f".format(it.probability)} " +
                     "risk=${it.risk} flags=${it.flags.map { f -> f.name }}",

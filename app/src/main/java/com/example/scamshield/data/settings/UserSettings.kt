@@ -24,6 +24,7 @@ data class UserSettings(
     val autoScanEnabled: Boolean = true,
     val onboardingComplete: Boolean = false,
     val activeProtection: Boolean = true,
+    val historyRetention: HistoryRetention = HistoryRetention.NINETY,
 ) {
     companion object {
         const val DEFAULT_BACKEND_URL = "https://scamsheil-backend.onrender.com/"
@@ -31,6 +32,17 @@ data class UserSettings(
 }
 
 enum class DarkMode { SYSTEM, DARK, ALWAYS_DARK_CYBER }
+
+enum class HistoryRetention(
+    val days: Int,          // 0 = no limit
+    @StringRes val labelRes: Int,
+    @StringRes val descRes: Int,
+) {
+    THIRTY(30,  R.string.retention_30,      R.string.retention_desc_days),
+    SIXTY(60,   R.string.retention_60,      R.string.retention_desc_days),
+    NINETY(90,  R.string.retention_90,      R.string.retention_desc_days),
+    FOREVER(0,  R.string.retention_forever, R.string.retention_desc_forever),
+}
 
 /**
  * Sensitivity gates the probability threshold below which an overlay/notification fires.

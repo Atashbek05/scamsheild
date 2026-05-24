@@ -172,6 +172,15 @@
     <string name="settings_backend">SERVER</string>
     <string name="settings_backend_url">Server URL</string>
     <string name="settings_save">SAVE</string>
+    <string name="settings_data">ДАННЫЕ</string>
+    <string name="settings_history_retention">Хранить историю угроз</string>
+    <string name="retention_30">30 дней</string>
+    <string name="retention_60">60 дней</string>
+    <string name="retention_90">90 дней</string>
+    <string name="retention_forever">Навсегда</string>
+    <string name="retention_desc_days">Записи старше %1$d дней удаляются при смене настройки</string>
+    <string name="retention_desc_forever">История хранится без ограничений</string>
+
     <string name="settings_about">ABOUT</string>
     <string name="settings_about_version">ScamShield · v1.0</string>
     <string name="settings_about_desc">AI scam detection · always-on protection · local pattern engine combined with FastAPI inference.</string>
@@ -184,8 +193,6 @@
     <!-- ── Nav tabs ───────────────────────────────────────────── -->
     <string name="tab_dashboard">Dashboard</string>
     <string name="tab_history">History</string>
-    <string name="tab_analytics">Analytics</string>
-    <string name="tab_simulator">Simulator</string>
     <string name="tab_settings">Settings</string>
 
     <!-- ── Risk levels ────────────────────────────────────────── -->
@@ -268,7 +275,6 @@
     <string name="date_range_month">This month</string>
 
     <!-- ── Call Protection tab ────────────────────────────────── -->
-    <string name="tab_calls">Calls</string>
     <string name="call_header_title">Call Protection</string>
     <string name="call_header_active_safe">ACTIVE · NO THREATS</string>
     <string name="call_header_active_dangerous">ACTIVE · THREATS DETECTED</string>

@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
  */
 object ApiClient {
 
-    private const val BASE_URL = "https://scamsheil-backend.onrender.com/"
+    private val BASE_URL = BuildConfig.BACKEND_URL
 
     // Connect timeout: time to establish the TCP connection.
     private const val CONNECT_TIMEOUT_S = 30L

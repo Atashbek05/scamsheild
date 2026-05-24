@@ -44,7 +44,9 @@
       "Bash(Sort-Object FullName)",
       "Bash(.\\\\gradlew.bat assembleDebug)",
       "Read(//mnt/c/Users/Admin/AndroidStudioProjects/**)",
-      "Bash(./gradlew assembleDebug)"
+      "Bash(./gradlew assembleDebug)",
+      "Bash(Test-Path *)",
+      "Bash(Get-ChildItem *)"
     ]
   }
 }

@@ -2,7 +2,7 @@ package com.example.scamshield.util
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
+import com.example.scamshield.util.logD
 
 /**
  * Resolves Android package names to user-visible application labels.
@@ -34,13 +34,13 @@ object AppNameResolver {
                 val pm   = context.packageManager
                 val info = pm.getApplicationInfo(packageName, 0)
                 pm.getApplicationLabel(info).toString().also {
-                    Log.d(TAG, "Resolved $packageName → \"$it\"")
+                    logD(TAG, "Resolved $packageName → \"$it\"")
                 }
             } catch (e: PackageManager.NameNotFoundException) {
                 packageName
                     .substringAfterLast('.')
                     .replaceFirstChar { it.uppercase() }
-                    .also { Log.d(TAG, "Fallback name for $packageName → \"$it\"") }
+                    .also { logD(TAG, "Fallback name for $packageName → \"$it\"") }
             }
         }
     }

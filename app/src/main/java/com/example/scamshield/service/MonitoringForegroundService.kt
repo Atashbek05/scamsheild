@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
+import com.example.scamshield.util.logD
 import androidx.core.app.NotificationCompat
 import com.example.scamshield.R
 
@@ -47,7 +47,7 @@ class MonitoringForegroundService : Service() {
         super.onCreate()
         ensureChannel()
         startForeground(NOTIFICATION_ID, buildNotification())
-        Log.d(TAG, "ScamShield foreground monitoring started")
+        logD(TAG, "ScamShield foreground monitoring started")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -56,7 +56,7 @@ class MonitoringForegroundService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "ScamShield foreground monitoring stopped")
+        logD(TAG, "ScamShield foreground monitoring stopped")
     }
 
     private fun ensureChannel() {

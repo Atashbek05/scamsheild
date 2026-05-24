@@ -1,6 +1,6 @@
 package com.example.scamshield.util
 
-import android.util.Log
+import com.example.scamshield.util.logD
 
 /**
  * Thread-safe gate that prevents duplicate and spam analysis requests across
@@ -69,7 +69,7 @@ object AnalysisCooldown {
             // ── Cooldown check ────────────────────────────────────────────────
             // Block if the previous accepted request was too recent.
             if (elapsed < COOLDOWN_MS) {
-                Log.d(
+                logD(
                     TAG,
                     "Throttled | pkg=$packageName | " +
                         "${elapsed}ms elapsed, cooldown is ${COOLDOWN_MS}ms",
@@ -81,7 +81,7 @@ object AnalysisCooldown {
             // Block if the text is identical and still within the dedup window.
             // (This check only runs after the cooldown has already cleared.)
             if (record.text == text && elapsed < DEDUP_WINDOW_MS) {
-                Log.d(
+                logD(
                     TAG,
                     "Duplicate suppressed | pkg=$packageName | " +
                         "identical content within ${DEDUP_WINDOW_MS / 1_000}s window",

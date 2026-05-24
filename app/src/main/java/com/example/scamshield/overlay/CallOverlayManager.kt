@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import com.example.scamshield.util.logD
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -110,7 +111,7 @@ object CallOverlayManager {
             return
         }
         if (isActive) {
-            Log.d(TAG, "Call overlay already active — dropping ${analysis.phoneNumber}")
+            logD(TAG, "Call overlay already active — dropping ${analysis.phoneNumber}")
             return
         }
 
@@ -139,7 +140,7 @@ object CallOverlayManager {
             startPulse(card, accentColor)
 
             mainHandler.postDelayed(autoDismissRunnable, AUTO_DISMISS_MS)
-            Log.d(
+            logD(
                 TAG,
                 "Call overlay shown | number=${analysis.phoneNumber} risk=${analysis.risk} " +
                     "prob=${"%.0f".format(analysis.probability * 100)}%",
@@ -168,7 +169,7 @@ object CallOverlayManager {
                 windowManager = null
                 isActive = false
                 currentNumber = null
-                Log.d(TAG, "Call overlay dismissed")
+                logD(TAG, "Call overlay dismissed")
             }
             .start()
     }
@@ -191,7 +192,7 @@ object CallOverlayManager {
             }
             start()
         }
-        Log.d(TAG, "Danger pulse started, accent=${"%08X".format(accentColor)}")
+        logD(TAG, "Danger pulse started, accent=${"%08X".format(accentColor)}")
     }
 
     // ── Card construction ────────────────────────────────────────────────────

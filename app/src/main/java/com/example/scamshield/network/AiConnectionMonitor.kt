@@ -1,6 +1,8 @@
 package com.example.scamshield.network
 
 import android.util.Log
+import com.example.scamshield.util.logD
+import com.example.scamshield.BuildConfig
 import com.example.scamshield.data.AiConnectionState
 import com.example.scamshield.data.AiTestResult
 import com.example.scamshield.data.AiTestState
@@ -23,7 +25,7 @@ object AiConnectionMonitor {
 
     private const val TAG = "AiConnMonitor"
     private const val PING_INTERVAL_MS = 30_000L
-    private const val BASE_URL = "https://scamsheil-backend.onrender.com/"
+    private val BASE_URL = BuildConfig.BACKEND_URL
     private const val SAMPLE_SCAM =
         "Congratulations! You have been selected for a \$10,000 prize. " +
             "Click the link to claim your reward immediately. " +
@@ -61,7 +63,7 @@ object AiConnectionMonitor {
                 val request = Request.Builder().url(BASE_URL).head().build()
                 pingClient.newCall(request).execute().use { response ->
                     val msg = "Ping: HTTP ${response.code}"
-                    Log.d(TAG, msg)
+                    logD(TAG, msg)
                     ThreatStore.addLog(LogLevel.DEBUG, TAG, msg)
                 }
                 ThreatStore.setAiConnectionState(AiConnectionState.Online)
@@ -92,7 +94,7 @@ object AiConnectionMonitor {
                         val msg = "Test OK: prob=${"%.1f".format(response.scamProbability * 100)}% " +
                             "label=${response.label} " +
                             "kw=${response.suspiciousKeywords.take(3)}"
-                        Log.d(TAG, msg)
+                        logD(TAG, msg)
                         ThreatStore.addLog(LogLevel.INFO, TAG, msg)
                         ThreatStore.setAiConnectionState(AiConnectionState.Online)
                         ThreatStore.setAiTestState(

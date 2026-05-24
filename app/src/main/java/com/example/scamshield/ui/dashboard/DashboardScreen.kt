@@ -11,26 +11,29 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bolt
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Sensors
-import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Psychology
+import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.Sensors
+import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -41,7 +44,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,6 +72,7 @@ import com.example.scamshield.ui.components.riskColor
 import com.example.scamshield.ui.theme.CyberAmber
 import com.example.scamshield.ui.theme.CyberBgCard
 import com.example.scamshield.ui.theme.CyberBgDeep
+import com.example.scamshield.ui.theme.CyberBgSurface
 import com.example.scamshield.ui.theme.CyberCyan
 import com.example.scamshield.ui.theme.CyberGreen
 import com.example.scamshield.ui.theme.CyberRed
@@ -73,7 +82,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private val DateFmt = SimpleDateFormat("HH:mm:ss", Locale.US)
+private val TimeFmt = SimpleDateFormat("HH:mm", Locale.US)
 
 @Composable
 fun DashboardScreen(
@@ -86,112 +95,140 @@ fun DashboardScreen(
     onRefreshPermissions: () -> Unit,
 ) {
     val vm: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory)
-    val state by vm.state.collectAsStateWithLifecycle()
-    val liveEvent by vm.liveEvent.collectAsStateWithLifecycle()
+    val state        by vm.state.collectAsStateWithLifecycle()
+    val liveEvent    by vm.liveEvent.collectAsStateWithLifecycle()
     val recentThreats by vm.recentThreatsFlow.collectAsStateWithLifecycle(initialValue = emptyList())
-    val recentScans by vm.recentScans.collectAsStateWithLifecycle()
+    val recentScans  by vm.recentScans.collectAsStateWithLifecycle()
 
     Column(
         Modifier
             .fillMaxSize()
             .background(CyberBgDeep)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        HeaderBlock(onRefresh = onRefreshPermissions)
+        TopBar(onRefresh = onRefreshPermissions)
+        Spacer(Modifier.height(16.dp))
+
+        ProtectionHero(state)
         Spacer(Modifier.height(14.dp))
 
-        ProtectionRing(state)
-        Spacer(Modifier.height(16.dp))
-
         StatsGrid(state)
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(14.dp))
 
-        LiveMonitorPanel(liveEvent, recentScans, state.aiState)
-        Spacer(Modifier.height(16.dp))
+        LiveMonitorCard(liveEvent, recentScans, state.aiState)
+        Spacer(Modifier.height(14.dp))
 
         if (!(isNotificationGranted && isAccessibilityGranted && isOverlayGranted)) {
             PermissionsBanner(
-                isNotificationGranted = isNotificationGranted,
+                isNotificationGranted  = isNotificationGranted,
                 isAccessibilityGranted = isAccessibilityGranted,
-                isOverlayGranted = isOverlayGranted,
-                onGrantNotificationClick = onGrantNotificationClick,
+                isOverlayGranted       = isOverlayGranted,
+                onGrantNotificationClick  = onGrantNotificationClick,
                 onGrantAccessibilityClick = onGrantAccessibilityClick,
-                onGrantOverlayClick = onGrantOverlayClick,
+                onGrantOverlayClick       = onGrantOverlayClick,
             )
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(14.dp))
         }
 
         AiEngineCard(state, onRunTest = vm::runAiTest)
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(14.dp))
 
         RecentThreatsCard(recentThreats)
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(32.dp))
     }
 }
 
 @Composable
-private fun HeaderBlock(onRefresh: () -> Unit) {
+private fun TopBar(onRefresh: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier
-                .size(40.dp)
-                .background(CyberCyan.copy(alpha = 0.15f), CircleShape),
+                .size(38.dp)
+                .background(CyberCyan.copy(alpha = 0.12f), CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Filled.Shield, null, tint = CyberCyan)
+            Icon(Icons.Rounded.Shield, null, tint = CyberCyan, modifier = Modifier.size(20.dp))
         }
         Spacer(Modifier.size(10.dp))
         Column(Modifier.weight(1f)) {
-            Text(stringResource(R.string.dashboard_title), color = CyberTextPrimary, fontWeight = FontWeight.Black, fontSize = 18.sp, letterSpacing = 3.sp)
-            Text(stringResource(R.string.dashboard_subtitle), color = CyberTextSecondary, fontSize = 11.sp)
+            Text(
+                stringResource(R.string.dashboard_title),
+                color         = CyberTextPrimary,
+                fontWeight    = FontWeight.Black,
+                fontSize      = 18.sp,
+                letterSpacing = 2.sp,
+            )
+            Text(
+                stringResource(R.string.dashboard_subtitle),
+                color    = CyberTextSecondary,
+                fontSize = 11.sp,
+                letterSpacing = 0.5.sp,
+            )
         }
         Box(
             Modifier
                 .clip(CircleShape)
-                .background(CyberBgCard)
+                .background(CyberBgSurface)
                 .clickable(onClick = onRefresh)
                 .padding(8.dp),
         ) {
-            Icon(Icons.Filled.Refresh, null, tint = CyberTextSecondary, modifier = Modifier.size(18.dp))
+            Icon(Icons.Rounded.Refresh, null, tint = CyberTextSecondary, modifier = Modifier.size(18.dp))
         }
     }
 }
 
 @Composable
-private fun ProtectionRing(state: DashboardViewModel.State) {
+private fun ProtectionHero(state: DashboardViewModel.State) {
     val online = state.aiState is AiConnectionState.Online
     val accent = if (online && state.activeServiceCount > 0) CyberGreen else CyberAmber
     val infinite = rememberInfiniteTransition(label = "ring")
     val sweep by infinite.animateFloat(
         0f, 360f,
-        infiniteRepeatable(tween(4000, easing = LinearEasing)), label = "sweep",
+        infiniteRepeatable(tween(4500, easing = LinearEasing)),
+        label = "sweep",
     )
+
     CyberCard(accent = accent) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(86.dp), contentAlignment = Alignment.Center) {
-                Canvas(Modifier.size(86.dp)) {
+            // Animated shield ring
+            Box(Modifier.size(92.dp), contentAlignment = Alignment.Center) {
+                Canvas(Modifier.size(92.dp)) {
                     val s = size.minDimension
-                    drawCircle(accent.copy(alpha = 0.12f), s / 2f - 4f)
+                    val r = s / 2f - 4f
+                    drawCircle(accent.copy(alpha = 0.08f), r)
                     drawArc(
-                        color = accent,
+                        color      = accent,
                         startAngle = sweep,
-                        sweepAngle = 90f,
-                        useCenter = false,
-                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = 4f),
-                        topLeft = androidx.compose.ui.geometry.Offset(4f, 4f),
-                        size = androidx.compose.ui.geometry.Size(s - 8f, s - 8f),
+                        sweepAngle = 110f,
+                        useCenter  = false,
+                        style      = Stroke(width = 3f, cap = StrokeCap.Round),
+                        topLeft    = Offset(4f, 4f),
+                        size       = Size(s - 8f, s - 8f),
                     )
+                    drawArc(
+                        color      = accent.copy(alpha = 0.25f),
+                        startAngle = sweep + 180f,
+                        sweepAngle = 60f,
+                        useCenter  = false,
+                        style      = Stroke(width = 2f, cap = StrokeCap.Round),
+                        topLeft    = Offset(4f, 4f),
+                        size       = Size(s - 8f, s - 8f),
+                    )
+                    drawCircle(accent.copy(alpha = 0.15f), r * 0.60f, style = Stroke(1.2f))
                 }
-                Icon(Icons.Filled.Shield, null, tint = accent, modifier = Modifier.size(34.dp))
+                Icon(Icons.Rounded.Shield, null, tint = accent, modifier = Modifier.size(32.dp))
             }
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(
                     stringResource(if (online) R.string.dashboard_active_protection else R.string.dashboard_standby),
-                    color = accent, fontWeight = FontWeight.Black, fontSize = 16.sp, letterSpacing = 2.sp,
+                    color         = accent,
+                    fontWeight    = FontWeight.Bold,
+                    fontSize      = 15.sp,
+                    letterSpacing = 1.sp,
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(3.dp))
                 Text(
                     when {
                         online && state.activeServiceCount >= 2 ->
@@ -205,9 +242,10 @@ private fun ProtectionRing(state: DashboardViewModel.State) {
                         else ->
                             stringResource(R.string.dashboard_initialising)
                     },
-                    color = CyberTextSecondary, fontSize = 12.sp,
+                    color    = CyberTextSecondary,
+                    fontSize = 12.sp,
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
                 InlineMetrics(
                     items = listOf(
                         stringResource(R.string.dashboard_metric_scanned) to state.totalScanned.toString(),
@@ -223,30 +261,37 @@ private fun ProtectionRing(state: DashboardViewModel.State) {
 @Composable
 private fun StatsGrid(state: DashboardViewModel.State) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        StatTile(stringResource(R.string.stat_scanned), state.totalScanned.toString(), CyberCyan, Modifier.weight(1f))
-        StatTile(stringResource(R.string.stat_threats), state.totalThreats.toString(), CyberRed, Modifier.weight(1f))
+        StatTile(stringResource(R.string.stat_scanned),   state.totalScanned.toString(),  CyberCyan,  Modifier.weight(1f))
+        StatTile(stringResource(R.string.stat_threats),   state.totalThreats.toString(),  CyberRed,   Modifier.weight(1f))
     }
     Spacer(Modifier.height(10.dp))
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        StatTile(stringResource(R.string.stat_high_risk), state.highRiskCount.toString(), CyberRed, Modifier.weight(1f))
-        StatTile(stringResource(R.string.stat_today), state.threatsToday.toString(), CyberAmber, Modifier.weight(1f))
+        StatTile(stringResource(R.string.stat_high_risk), state.highRiskCount.toString(), CyberRed,   Modifier.weight(1f))
+        StatTile(stringResource(R.string.stat_today),     state.threatsToday.toString(),  CyberAmber, Modifier.weight(1f))
     }
 }
 
 @Composable
-private fun LiveMonitorPanel(
+private fun LiveMonitorCard(
     live: MonitoringEvent?,
     recentScans: List<MonitoringEvent>,
     ai: AiConnectionState,
 ) {
     CyberCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Sensors, null, tint = CyberCyan, modifier = Modifier.size(20.dp))
+            Icon(Icons.Rounded.Sensors, null, tint = CyberCyan, modifier = Modifier.size(18.dp))
             Spacer(Modifier.size(8.dp))
-            Text(stringResource(R.string.dashboard_live_monitor), color = CyberCyan, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp, modifier = Modifier.weight(1f))
-            NeonPulse(color = if (live != null) CyberGreen else CyberTextSecondary, diameter = 6.dp)
+            Text(
+                stringResource(R.string.dashboard_live_monitor),
+                color         = CyberCyan,
+                fontWeight    = FontWeight.SemiBold,
+                fontSize      = 12.sp,
+                letterSpacing = 1.sp,
+                modifier      = Modifier.weight(1f),
+            )
+            NeonPulse(color = if (live != null) CyberGreen else CyberTextSecondary, diameter = 5.dp)
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(12.dp))
 
         if (live != null) {
             ScanRow(live)
@@ -255,13 +300,20 @@ private fun LiveMonitorPanel(
         } else {
             Text(
                 stringResource(if (ai is AiConnectionState.Online) R.string.dashboard_no_scan else R.string.dashboard_engine_idle),
-                color = CyberTextSecondary, fontSize = 12.sp,
+                color    = CyberTextSecondary,
+                fontSize = 12.sp,
             )
         }
 
         if (recentScans.isNotEmpty()) {
             Spacer(Modifier.height(14.dp))
-            Text(stringResource(R.string.dashboard_recent_activity), color = CyberTextSecondary, fontWeight = FontWeight.SemiBold, fontSize = 10.sp, letterSpacing = 1.5.sp)
+            Text(
+                stringResource(R.string.dashboard_recent_activity),
+                color         = CyberTextSecondary,
+                fontWeight    = FontWeight.Medium,
+                fontSize      = 10.sp,
+                letterSpacing = 1.sp,
+            )
             Spacer(Modifier.height(6.dp))
             recentScans.take(5).forEach { ev ->
                 ScanRow(ev)
@@ -288,20 +340,23 @@ private fun ScanRow(ev: MonitoringEvent) {
         ScanStatus.ERROR           -> stringResource(R.string.scan_status_error)
     }
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(8.dp).background(color, CircleShape))
+        Box(Modifier.size(7.dp).background(color, CircleShape))
         Spacer(Modifier.size(8.dp))
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     ev.appLabel.uppercase(),
-                    color = CyberTextPrimary, fontSize = 11.sp, fontWeight = FontWeight.Bold,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
+                    color      = CyberTextPrimary,
+                    fontSize   = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines   = 1,
+                    overflow   = TextOverflow.Ellipsis,
+                    modifier   = Modifier.weight(1f),
                 )
                 Spacer(Modifier.size(4.dp))
-                Text(tag, color = color, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.sp, maxLines = 1)
+                Text(tag, color = color, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
                 Spacer(Modifier.size(6.dp))
-                Text(DateFmt.format(Date(ev.timestamp)), color = CyberTextSecondary, fontSize = 9.sp)
+                Text(TimeFmt.format(Date(ev.timestamp)), color = CyberTextSecondary, fontSize = 9.sp)
             }
             Text(ev.textPreview.take(80), color = CyberTextSecondary, fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
@@ -323,34 +378,45 @@ private fun PermissionsBanner(
 ) {
     CyberCard(accent = CyberAmber) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.WarningAmber, null, tint = CyberAmber)
+            Icon(Icons.Rounded.Warning, null, tint = CyberAmber, modifier = Modifier.size(18.dp))
             Spacer(Modifier.size(8.dp))
-            Text(stringResource(R.string.dashboard_permissions_needed), color = CyberAmber, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
+            Text(
+                stringResource(R.string.dashboard_permissions_needed),
+                color         = CyberAmber,
+                fontWeight    = FontWeight.SemiBold,
+                fontSize      = 12.sp,
+                letterSpacing = 0.5.sp,
+            )
         }
-        Spacer(Modifier.height(8.dp))
-        PermissionRow(stringResource(R.string.dashboard_perm_notification_access), isNotificationGranted, onGrantNotificationClick)
+        Spacer(Modifier.height(10.dp))
+        PermissionRow(stringResource(R.string.dashboard_perm_notification_access),   isNotificationGranted,  onGrantNotificationClick)
         PermissionRow(stringResource(R.string.dashboard_perm_accessibility_service), isAccessibilityGranted, onGrantAccessibilityClick)
-        PermissionRow(stringResource(R.string.dashboard_perm_overlay_apps), isOverlayGranted, onGrantOverlayClick)
+        PermissionRow(stringResource(R.string.dashboard_perm_overlay_apps),          isOverlayGranted,       onGrantOverlayClick)
     }
 }
 
 @Composable
 private fun PermissionRow(label: String, granted: Boolean, onClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            if (granted) Icons.Filled.CheckCircle else Icons.Filled.WarningAmber,
+            if (granted) Icons.Rounded.CheckCircle else Icons.Rounded.Warning,
             null,
-            tint = if (granted) CyberGreen else CyberAmber,
-            modifier = Modifier.size(16.dp),
+            tint     = if (granted) CyberGreen else CyberAmber,
+            modifier = Modifier.size(15.dp),
         )
         Spacer(Modifier.size(8.dp))
         Text(label, color = CyberTextPrimary, fontSize = 13.sp, modifier = Modifier.weight(1f))
         if (!granted) {
-            OutlinedButton(onClick = onClick) {
-                Text(stringResource(R.string.perm_grant), color = CyberCyan, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+            OutlinedButton(
+                onClick = onClick,
+                shape   = RoundedCornerShape(8.dp),
+            ) {
+                Text(stringResource(R.string.perm_grant), color = CyberCyan, fontWeight = FontWeight.SemiBold, fontSize = 11.sp)
             }
         }
     }
@@ -360,33 +426,41 @@ private fun PermissionRow(label: String, granted: Boolean, onClick: () -> Unit) 
 private fun AiEngineCard(state: DashboardViewModel.State, onRunTest: () -> Unit) {
     CyberCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Psychology, null, tint = CyberCyan, modifier = Modifier.size(20.dp))
+            Icon(Icons.Rounded.Psychology, null, tint = CyberCyan, modifier = Modifier.size(18.dp))
             Spacer(Modifier.size(8.dp))
-            Text(stringResource(R.string.dashboard_ai_engine), color = CyberCyan, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp, modifier = Modifier.weight(1f))
-            val (label, color) = when (state.aiState) {
+            Text(
+                stringResource(R.string.dashboard_ai_engine),
+                color         = CyberCyan,
+                fontWeight    = FontWeight.SemiBold,
+                fontSize      = 12.sp,
+                letterSpacing = 1.sp,
+                modifier      = Modifier.weight(1f),
+            )
+            val (label, chipColor) = when (state.aiState) {
                 is AiConnectionState.Online     -> stringResource(R.string.ai_state_online)     to CyberGreen
                 is AiConnectionState.Connecting -> stringResource(R.string.ai_state_connecting) to CyberCyan
                 is AiConnectionState.Offline    -> stringResource(R.string.ai_state_offline)    to CyberAmber
                 is AiConnectionState.Error      -> stringResource(R.string.ai_state_error)      to CyberRed
                 is AiConnectionState.Idle       -> stringResource(R.string.ai_state_idle)       to CyberTextSecondary
             }
-            NeonChip(label, accent = color)
+            NeonChip(label, accent = chipColor)
         }
         Spacer(Modifier.height(10.dp))
-        Text(stringResource(R.string.dashboard_ai_desc), color = CyberTextSecondary, fontSize = 12.sp)
+        Text(stringResource(R.string.dashboard_ai_desc), color = CyberTextSecondary, fontSize = 12.sp, lineHeight = 17.sp)
         if (state.aiState is AiConnectionState.Connecting) {
             Spacer(Modifier.height(8.dp))
             NeonProgressBar()
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(14.dp))
         Button(
-            onClick = onRunTest,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = CyberCyan, contentColor = CyberBgDeep),
+            onClick  = onRunTest,
+            modifier = Modifier.fillMaxWidth().height(44.dp),
+            shape    = RoundedCornerShape(12.dp),
+            colors   = ButtonDefaults.buttonColors(containerColor = CyberCyan, contentColor = CyberBgDeep),
         ) {
-            Icon(Icons.Filled.PlayArrow, null)
+            Icon(Icons.Rounded.PlayArrow, null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.size(6.dp))
-            Text(stringResource(R.string.dashboard_run_test), fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.dashboard_run_test), fontWeight = FontWeight.Bold, fontSize = 13.sp)
         }
     }
 }
@@ -395,12 +469,27 @@ private fun AiEngineCard(state: DashboardViewModel.State, onRunTest: () -> Unit)
 private fun RecentThreatsCard(recent: List<com.example.scamshield.data.DetectedThreat>) {
     CyberCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Bolt, null, tint = CyberRed, modifier = Modifier.size(20.dp))
+            Icon(Icons.Rounded.Bolt, null, tint = CyberRed, modifier = Modifier.size(18.dp))
             Spacer(Modifier.size(8.dp))
-            Text(stringResource(R.string.dashboard_recent_threats), color = CyberRed, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp, modifier = Modifier.weight(1f))
-            Text("${recent.size}", color = CyberTextSecondary, fontSize = 11.sp)
+            Text(
+                stringResource(R.string.dashboard_recent_threats),
+                color         = CyberRed,
+                fontWeight    = FontWeight.SemiBold,
+                fontSize      = 12.sp,
+                letterSpacing = 1.sp,
+                modifier      = Modifier.weight(1f),
+            )
+            if (recent.isNotEmpty()) {
+                Box(
+                    Modifier
+                        .background(CyberRed.copy(alpha = 0.15f), CircleShape)
+                        .padding(horizontal = 8.dp, vertical = 3.dp),
+                ) {
+                    Text("${recent.size}", color = CyberRed, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                }
+            }
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(12.dp))
         if (recent.isEmpty()) {
             Text(stringResource(R.string.dashboard_no_threats), color = CyberTextSecondary, fontSize = 12.sp)
         } else {
@@ -414,34 +503,53 @@ private fun RecentThreatsCard(recent: List<com.example.scamshield.data.DetectedT
 
 @Composable
 private fun ThreatRow(threat: com.example.scamshield.data.DetectedThreat) {
-    val risk = RiskLevel.fromProbability(threat.probability)
+    val risk  = RiskLevel.fromProbability(threat.probability)
     val color = riskColor(risk)
-    Column(
+    Row(
         Modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(10.dp))
-            .background(CyberBgCard)
-            .padding(10.dp),
+            .background(color.copy(alpha = 0.06f)),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                threat.appLabel ?: threat.sourcePackage.substringAfterLast('.').uppercase(),
-                color = CyberTextPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold,
-                maxLines = 1, overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
-            )
-            Spacer(Modifier.size(4.dp))
-            Text(
-                "${(threat.probability * 100).toInt()}% ${stringResource(risk.labelRes)}",
-                color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1,
-            )
-        }
-        Spacer(Modifier.height(4.dp))
-        Text(threat.messagePreview, color = CyberTextSecondary, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
-        if (threat.keywords.isNotEmpty()) {
-            Spacer(Modifier.height(6.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                threat.keywords.take(3).forEach { NeonChip(it, accent = color) }
+        // Left accent bar fills card height
+        Box(
+            Modifier
+                .width(3.dp)
+                .fillMaxHeight()
+                .background(color)
+        )
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    threat.appLabel ?: threat.sourcePackage.substringAfterLast('.').uppercase(),
+                    color      = CyberTextPrimary,
+                    fontSize   = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines   = 1,
+                    overflow   = TextOverflow.Ellipsis,
+                    modifier   = Modifier.weight(1f),
+                )
+                Spacer(Modifier.size(4.dp))
+                Text(
+                    "${(threat.probability * 100).toInt()}% ${stringResource(risk.labelRes).uppercase()}",
+                    color      = color,
+                    fontSize   = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines   = 1,
+                )
+            }
+            Spacer(Modifier.height(3.dp))
+            Text(threat.messagePreview, color = CyberTextSecondary, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            if (threat.keywords.isNotEmpty()) {
+                Spacer(Modifier.height(6.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    threat.keywords.take(3).forEach { NeonChip(it, accent = color) }
+                }
             }
         }
     }

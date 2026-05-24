@@ -3,7 +3,7 @@ package com.example.scamshield.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import com.example.scamshield.util.logD
 
 /**
  * Re-launches the foreground monitoring service on device boot so users don't
@@ -16,7 +16,7 @@ class BootReceiver : BroadcastReceiver() {
             intent?.action == Intent.ACTION_LOCKED_BOOT_COMPLETED ||
             intent?.action == "android.intent.action.QUICKBOOT_POWERON"
         ) {
-            Log.d("ScamShieldBoot", "Boot completed — starting monitoring foreground service")
+            logD("ScamShieldBoot", "Boot completed — starting monitoring foreground service")
             MonitoringForegroundService.start(context)
         }
     }

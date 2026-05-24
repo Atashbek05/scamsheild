@@ -3,6 +3,7 @@ package com.example.scamshield.service
 import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
+import com.example.scamshield.util.logD
 import com.example.scamshield.ScamShieldApp
 import com.example.scamshield.data.call.CallAction
 import com.example.scamshield.data.call.CallRisk
@@ -40,7 +41,7 @@ class ScamShieldCallScreeningService : CallScreeningService() {
         val rawNumber = handle?.schemeSpecificPart
         val callerIdHint = runCatching { callDetails.callerDisplayName }.getOrNull()
 
-        Log.d(TAG, "onScreenCall: number=$rawNumber, callerId=$callerIdHint")
+        logD(TAG, "onScreenCall: number=$rawNumber, callerId=$callerIdHint")
 
         scope.launch {
             try {

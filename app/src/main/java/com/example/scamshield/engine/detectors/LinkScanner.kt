@@ -34,6 +34,8 @@ object LinkScanner {
         "reset-password", "unlock-account", "delivery-pending", "package-update",
         "tax-refund", "irs-refund", "kyc-update", "limited-offer", "exclusive-deal",
         "win-now", "redeem-now", "click-here",
+        "podtverzhdenie", "proverka", "vhod", "vosstanovlenie",
+        "blokirovka", "oplata", "perevod", "vydacha",
     )
 
     private val IMPERSONATED_BRANDS = mapOf(
@@ -46,12 +48,19 @@ object LinkScanner {
         "facebook" to listOf("facebook", "instagram"),
         "whatsapp" to listOf("whatsapp"),
         "bank"     to listOf("bank-"),
+        "sberbank"  to listOf("sberbank", "sber"),
+        "tinkoff"   to listOf("tinkoff", "tinkof"),
+        "vtb"       to listOf("vtb24", "vtb-bank"),
+        "gosuslugi" to listOf("gosuslugi", "esia", "gosuslugi-"),
+        "alfabank"  to listOf("alfabank", "alfa-bank"),
     )
 
     private val LEGIT_HOSTS = setOf(
         "amazon.com", "apple.com", "google.com", "gmail.com", "microsoft.com",
         "outlook.com", "live.com", "paypal.com", "netflix.com", "facebook.com",
         "instagram.com", "whatsapp.com",
+        "sberbank.ru", "tinkoff.ru", "vtb.ru", "gosuslugi.ru",
+        "alfabank.ru", "gazprombank.ru",
     )
 
     /** Parsed view of a single link finding. */

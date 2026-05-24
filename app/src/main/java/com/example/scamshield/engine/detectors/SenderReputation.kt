@@ -18,6 +18,10 @@ object SenderReputation {
     private val SPOOFED_BRANDS = listOf(
         "amaz0n", "g00gle", "paypa1", "micros0ft", "app1e", "netfl1x", "faceb00k",
         "support@", "no-reply@", "security@", "alert@",
+        "sberbank", "s6erbank", "tinkoff", "t1nkoff",
+        "vtb24", "alfabank", "a1fabank", "gosuslugi",
+        "g0suslugi", "sber-", "tinkof-", "sbер",
+        "поддержка@", "безопасность@", "уведомление@",
     )
 
     private val TRUSTED_PREFIXES = listOf("verified", "support", "official")

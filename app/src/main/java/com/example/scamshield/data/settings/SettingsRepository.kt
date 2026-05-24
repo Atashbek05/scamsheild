@@ -38,6 +38,7 @@ class SettingsRepository private constructor(context: Context) {
         val AUTO_SCAN             = booleanPreferencesKey("auto_scan")
         val ONBOARDING_COMPLETE   = booleanPreferencesKey("onboarding_complete")
         val ACTIVE_PROTECTION     = booleanPreferencesKey("active_protection")
+        val HISTORY_RETENTION     = stringPreferencesKey("history_retention")
     }
 
     val settings: Flow<UserSettings> = ds.data
@@ -67,6 +68,9 @@ class SettingsRepository private constructor(context: Context) {
             autoScanEnabled      = this[Keys.AUTO_SCAN] ?: true,
             onboardingComplete   = this[Keys.ONBOARDING_COMPLETE] ?: false,
             activeProtection     = this[Keys.ACTIVE_PROTECTION] ?: true,
+            historyRetention     = runCatching {
+                HistoryRetention.valueOf(this[Keys.HISTORY_RETENTION] ?: HistoryRetention.NINETY.name)
+            }.getOrDefault(HistoryRetention.NINETY),
         )
     }
 
@@ -83,6 +87,7 @@ class SettingsRepository private constructor(context: Context) {
     suspend fun setAutoScanEnabled(value: Boolean)        = ds.edit { it[Keys.AUTO_SCAN] = value }
     suspend fun setOnboardingComplete(value: Boolean)     = ds.edit { it[Keys.ONBOARDING_COMPLETE] = value }
     suspend fun setActiveProtection(value: Boolean)       = ds.edit { it[Keys.ACTIVE_PROTECTION] = value }
+    suspend fun setHistoryRetention(value: HistoryRetention) = ds.edit { it[Keys.HISTORY_RETENTION] = value.name }
 
     companion object {
         @Volatile

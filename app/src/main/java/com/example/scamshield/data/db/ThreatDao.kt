@@ -1,5 +1,6 @@
 package com.example.scamshield.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -23,6 +24,12 @@ interface ThreatDao {
 
     @Query("SELECT * FROM threats WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): ThreatEntity?
+
+    @Query("SELECT * FROM threats ORDER BY timestamp DESC")
+    fun getAllThreatsPaged(): PagingSource<Int, ThreatEntity>
+
+    @Query("DELETE FROM threats WHERE timestamp < :cutoffTimestamp")
+    suspend fun deleteOlderThan(cutoffTimestamp: Long)
 
     @Query("DELETE FROM threats")
     suspend fun deleteAll()

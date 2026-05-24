@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
 import android.util.Log
+import com.example.scamshield.util.logD
 import com.example.scamshield.ScamShieldApp
 import com.example.scamshield.data.call.CallAction
 import com.example.scamshield.data.call.CallRisk
@@ -33,7 +34,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
         if (state != TelephonyManager.EXTRA_STATE_RINGING) return
 
         val incoming = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
-        Log.d(TAG, "PHONE_STATE RINGING from ${incoming ?: "<hidden>"}")
+        logD(TAG, "PHONE_STATE RINGING from ${incoming ?: "<hidden>"}")
 
         // Debounce duplicate broadcasts (PHONE_STATE fires multiple times per ring)
         val now = System.currentTimeMillis()

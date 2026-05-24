@@ -16,14 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.example.scamshield.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scamshield.R
 import com.example.scamshield.data.RiskLevel
 import com.example.scamshield.ui.theme.CyberAmber
 import com.example.scamshield.ui.theme.CyberBgSurface
@@ -47,32 +47,44 @@ fun RiskBar(
     modifier: Modifier = Modifier,
     showLabel: Boolean = true,
 ) {
-    val target = probability.coerceIn(0f, 1f)
+    val target   = probability.coerceIn(0f, 1f)
     val animated by animateFloatAsState(target, animationSpec = tween(600), label = "risk")
+    val color    = riskColor(riskLevel)
 
     Column(modifier) {
         if (showLabel) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.label_risk_score), color = CyberTextSecondary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment     = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.label_risk_score),
+                    color      = CyberTextSecondary,
+                    fontSize   = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 0.8.sp,
+                )
                 Text(
                     "${(target * 100).toInt()}%  ·  ${stringResource(riskLevel.labelRes).uppercase()}",
-                    color = riskColor(riskLevel),
-                    fontSize = 12.sp,
+                    color      = color,
+                    fontSize   = 12.sp,
                     fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp,
                 )
             }
         }
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp))
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp))
                 .background(CyberBgSurface),
         ) {
-            Canvas(Modifier.fillMaxWidth().height(8.dp)) {
+            Canvas(Modifier.fillMaxWidth().height(6.dp)) {
                 drawRect(
-                    brush = Brush.horizontalGradient(listOf(CyberCyan, riskColor(riskLevel))),
-                    size = androidx.compose.ui.geometry.Size(size.width * animated, size.height),
+                    brush = Brush.horizontalGradient(listOf(CyberCyan, color)),
+                    size  = androidx.compose.ui.geometry.Size(size.width * animated, size.height),
                 )
             }
         }

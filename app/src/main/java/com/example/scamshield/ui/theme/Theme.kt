@@ -7,29 +7,30 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val CyberColorScheme = darkColorScheme(
-    primary          = CyberCyan,
-    onPrimary        = CyberBgDeep,
-    secondary        = CyberGreen,
-    onSecondary      = CyberBgDeep,
-    tertiary         = CyberAmber,
-    background       = CyberBgDeep,
-    onBackground     = CyberTextPrimary,
-    surface          = CyberBgSurface,
-    onSurface        = CyberTextPrimary,
-    surfaceVariant   = CyberBgCard,
-    onSurfaceVariant = CyberTextSecondary,
-    error            = CyberRed,
-    onError          = CyberTextPrimary,
-    outline          = CyberBorder,
-    outlineVariant   = CyberBorder,
+    primary           = CyberCyan,
+    onPrimary         = CyberBgDeep,
+    primaryContainer  = CyberBgCardHigh,
+    secondary         = CyberGreen,
+    onSecondary       = CyberBgDeep,
+    tertiary          = CyberAmber,
+    background        = CyberBgDeep,
+    onBackground      = CyberTextPrimary,
+    surface           = CyberBgSurface,
+    onSurface         = CyberTextPrimary,
+    surfaceVariant    = CyberBgCard,
+    onSurfaceVariant  = CyberTextSecondary,
+    surfaceContainer  = CyberBgCardHigh,
+    error             = CyberRed,
+    onError           = CyberTextPrimary,
+    outline           = CyberBorder,
+    outlineVariant    = CyberBorderSubtle,
 )
 
 private val LightSchemeFallback = lightColorScheme()
 private val DarkSchemeFallback  = darkColorScheme()
 
 /**
- * @param mode  Optional override:
- *              0 = always cyber dark (default), 1 = system, 2 = strict material dark
+ * @param mode 0 = cyber dark (default), 1 = system, 2 = strict material dark
  */
 @Composable
 fun ScamShieldTheme(

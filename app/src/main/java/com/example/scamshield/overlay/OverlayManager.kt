@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import com.example.scamshield.util.logD
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
@@ -162,7 +163,7 @@ object OverlayManager {
 
         // ── Guard 2: single-instance ─────────────────────────────────────────────
         if (isActive) {
-            Log.d(TAG, "Overlay already active — dropping event from ${data.packageName}")
+            logD(TAG, "Overlay already active — dropping event from ${data.packageName}")
             return
         }
 
@@ -172,7 +173,7 @@ object OverlayManager {
         val elapsed   = now - lastShown
         if (elapsed < PER_PACKAGE_COOLDOWN_MS) {
             val remainSec = (PER_PACKAGE_COOLDOWN_MS - elapsed) / 1_000
-            Log.d(TAG, "Cooldown active for ${data.packageName} — ${remainSec}s remaining")
+            logD(TAG, "Cooldown active for ${data.packageName} — ${remainSec}s remaining")
             return
         }
 
@@ -180,7 +181,7 @@ object OverlayManager {
         purgeExpiredHashes(now)
         val msgHash = data.messagePreview.hashCode()
         if (recentHashes.containsKey(msgHash)) {
-            Log.d(TAG, "Duplicate message suppressed for ${data.packageName}")
+            logD(TAG, "Duplicate message suppressed for ${data.packageName}")
             return
         }
         recentHashes[msgHash] = now
@@ -213,7 +214,7 @@ object OverlayManager {
 
             mainHandler.postDelayed(autoDismissRunnable, AUTO_DISMISS_MS)
 
-            Log.d(
+            logD(
                 TAG,
                 "Overlay shown | pkg=${data.packageName} | app=\"${data.sourceAppName}\" | " +
                     "level=${data.threatLevel} | prob=${"%.0f".format(data.probability * 100)}% | " +
@@ -249,7 +250,7 @@ object OverlayManager {
                     currentView   = null
                     windowManager = null
                     isActive      = false
-                    Log.d(TAG, "Overlay dismissed")
+                    logD(TAG, "Overlay dismissed")
                 }
             }
             .start()
@@ -526,7 +527,7 @@ object OverlayManager {
                         addUpdateListener { barFill.scaleX = it.animatedValue as Float }
                     }
                     anim.start()
-                    Log.d(TAG, "Risk bar animating to ${"%.0f".format(targetScale * 100)}%")
+                    logD(TAG, "Risk bar animating to ${"%.0f".format(targetScale * 100)}%")
                 }
             },
         )
