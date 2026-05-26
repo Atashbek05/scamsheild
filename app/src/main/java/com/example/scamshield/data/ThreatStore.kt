@@ -8,10 +8,16 @@ import kotlinx.coroutines.flow.update
 // ── AI connectivity ───────────────────────────────────────────────────────────
 
 sealed class AiConnectionState {
-    object Idle       : AiConnectionState()
-    object Connecting : AiConnectionState()
-    object Online     : AiConnectionState()
-    object Offline    : AiConnectionState()
+    object Idle        : AiConnectionState()
+    object Connecting  : AiConnectionState()
+    object Online      : AiConnectionState()
+    /** Backend responded but took > 5 s — cold start in progress. */
+    object Slow        : AiConnectionState()
+    /** Backend returned HTTP 429 — waiting for rate-limit window to expire. */
+    object RateLimited : AiConnectionState()
+    object Offline     : AiConnectionState()
+    /** Client-side rate limiter active — local detectors handle the load. */
+    object Throttled   : AiConnectionState()
     data class Error(val message: String) : AiConnectionState()
 }
 

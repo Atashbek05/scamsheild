@@ -25,6 +25,7 @@ object AiConnectionMonitor {
 
     private const val TAG = "AiConnMonitor"
     private const val PING_INTERVAL_MS = 30_000L
+    private const val SLOW_THRESHOLD_MS = 5_000L
     private val BASE_URL = BuildConfig.BACKEND_URL
     private const val SAMPLE_SCAM =
         "Congratulations! You have been selected for a \$10,000 prize. " +
@@ -61,13 +62,21 @@ object AiConnectionMonitor {
         withContext(Dispatchers.IO) {
             try {
                 val request = Request.Builder().url(BASE_URL).head().build()
+                val startMs = System.currentTimeMillis()
                 pingClient.newCall(request).execute().use { response ->
-                    val msg = "Ping: HTTP ${response.code}"
+                    val elapsed = System.currentTimeMillis() - startMs
+                    val msg = "Ping: HTTP ${response.code} in ${elapsed}ms"
                     logD(TAG, msg)
                     ThreatStore.addLog(LogLevel.DEBUG, TAG, msg)
+
+                    if (elapsed >= SLOW_THRESHOLD_MS) {
+                        ThreatStore.setAiConnectionState(AiConnectionState.Slow)
+                        ThreatStore.addLog(LogLevel.INFO, TAG, "Backend slow (${elapsed}ms) — cold start")
+                    } else {
+                        ThreatStore.setAiConnectionState(AiConnectionState.Online)
+                        ThreatStore.addLog(LogLevel.INFO, TAG, "Backend online")
+                    }
                 }
-                ThreatStore.setAiConnectionState(AiConnectionState.Online)
-                ThreatStore.addLog(LogLevel.INFO, TAG, "Backend online")
             } catch (e: IOException) {
                 val msg = "${e.javaClass.simpleName}: ${e.message}"
                 Log.e(TAG, "Offline — $msg")
@@ -82,7 +91,11 @@ object AiConnectionMonitor {
         }
     }
 
-    /** Send a sample scam payload and surface the result in ThreatStore.aiTestState. */
+    /**
+     * Send a sample scam payload and surface the result in ThreatStore.aiTestState.
+     * Connection state is driven by [ScamAnalysisRepository.analyzeText] — this function
+     * only updates [AiTestState].
+     */
     fun runTest(scope: CoroutineScope) {
         scope.launch {
             ThreatStore.setAiConnectionState(AiConnectionState.Connecting)
@@ -96,7 +109,7 @@ object AiConnectionMonitor {
                             "kw=${response.suspiciousKeywords.take(3)}"
                         logD(TAG, msg)
                         ThreatStore.addLog(LogLevel.INFO, TAG, msg)
-                        ThreatStore.setAiConnectionState(AiConnectionState.Online)
+                        // Connection state already updated by executeWithRetry in the repository
                         ThreatStore.setAiTestState(
                             AiTestState.Success(
                                 AiTestResult(
@@ -111,7 +124,7 @@ object AiConnectionMonitor {
                         val msg = e.message ?: "Test failed"
                         Log.e(TAG, "Test failed: $msg")
                         ThreatStore.addLog(LogLevel.ERROR, TAG, "Test failed: $msg")
-                        ThreatStore.setAiConnectionState(AiConnectionState.Offline)
+                        // Connection state already updated by executeWithRetry in the repository
                         ThreatStore.setAiTestState(AiTestState.Error(msg))
                     },
                 )

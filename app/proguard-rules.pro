@@ -1,21 +1,46 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ── Room entities ────────────────────────────────────────────────────────────
+-keep class com.example.scamshield.data.db.ThreatEntity { *; }
+-keep class com.example.scamshield.data.db.CallEntity { *; }
+-keep class com.example.scamshield.data.db.BlockedNumberEntity { *; }
+-keep class com.example.scamshield.data.db.TrustedContactEntity { *; }
+-keep class com.example.scamshield.data.db.FeedbackEntity { *; }
+-keepclassmembers @androidx.room.Entity class * { *; }
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# ── Retrofit / GSON models ────────────────────────────────────────────────────
+-keep class com.example.scamshield.model.ScamAnalysisRequest { *; }
+-keep class com.example.scamshield.model.ScamAnalysisResponse { *; }
+-keep class com.example.scamshield.model.NotificationData { *; }
+# Generic GSON rule: keep all serialized/deserialized field names
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# ── Retrofit internals ────────────────────────────────────────────────────────
+-keepattributes Signature
+-keepattributes Exceptions
+-keep class retrofit2.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# ── OkHttp ────────────────────────────────────────────────────────────────────
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
+# ── Kotlin Coroutines ─────────────────────────────────────────────────────────
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+-dontwarn kotlinx.coroutines.**
+
+# ── DataStore ─────────────────────────────────────────────────────────────────
+-keep class androidx.datastore.** { *; }
+-dontwarn androidx.datastore.**
+
+# ── Firebase / Crashlytics ────────────────────────────────────────────────────
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-dontwarn com.google.firebase.**
+
+# ── Preserve stack traces for Crashlytics ─────────────────────────────────────
+-renamesourcefileattribute SourceFile

@@ -45,6 +45,9 @@
     <string name="dashboard_ai_online_waiting">ИИ онлайн · ожидание сервисов</string>
     <string name="dashboard_connecting">Подключение к серверу…</string>
     <string name="dashboard_backend_offline">Сервер недоступен · используется локальный движок</string>
+    <string name="dashboard_rate_limited">Локальный режим (высокая нагрузка) · активен rate limit</string>
+    <string name="dashboard_slow_response">Сервер медленный · идёт холодный запуск</string>
+    <string name="dashboard_server_rate_limited">Сервер ограничивает запросы · повтор через 30 с</string>
     <string name="dashboard_initialising">Инициализация движка</string>
     <string name="dashboard_metric_scanned">проверено</string>
     <string name="dashboard_metric_threats">угрозы</string>
@@ -72,8 +75,11 @@
 
     <!-- ── AI connection state chips ─────────────────────────── -->
     <string name="ai_state_online">ОНЛАЙН</string>
+    <string name="ai_state_slow">МЕДЛЕННО</string>
+    <string name="ai_state_rate_limited">ЛИМИТ</string>
     <string name="ai_state_connecting">ПОДКЛЮЧЕНИЕ</string>
     <string name="ai_state_offline">ОФЛАЙН</string>
+    <string name="ai_state_throttled">НАГРУЗКА</string>
     <string name="ai_state_error">ОШИБКА</string>
     <string name="ai_state_idle">ОЖИДАНИЕ</string>
 
@@ -99,6 +105,9 @@
     <string name="history_section_ai">АНАЛИЗ ИИ</string>
     <string name="history_delete">УДАЛИТЬ</string>
     <string name="history_empty">Угрозы не соответствуют текущим фильтрам.</string>
+    <string name="history_empty_title">Угроз не обнаружено</string>
+    <string name="history_empty_body">Ваш телефон под защитой. Все проверенные сообщения чисты.</string>
+    <string name="dashboard_no_active_threats">Активных угроз нет — всё чисто</string>
 
     <!-- ── Analytics ──────────────────────────────────────────── -->
     <string name="analytics_title">АНАЛИТИКА</string>
@@ -172,6 +181,14 @@
     <string name="settings_backend">СЕРВЕР</string>
     <string name="settings_backend_url">URL сервера</string>
     <string name="settings_save">СОХРАНИТЬ</string>
+    <string name="settings_data">ДАННЫЕ</string>
+    <string name="settings_history_retention">Хранить историю угроз</string>
+    <string name="retention_30">30 дней</string>
+    <string name="retention_60">60 дней</string>
+    <string name="retention_90">90 дней</string>
+    <string name="retention_forever">Навсегда</string>
+    <string name="retention_desc_days">Записи старше %1$d дней удаляются при смене настройки</string>
+    <string name="retention_desc_forever">История хранится без ограничений</string>
     <string name="settings_about">О ПРИЛОЖЕНИИ</string>
     <string name="settings_about_version">ScamShield · v1.0</string>
     <string name="settings_about_desc">Обнаружение мошенничества с ИИ · постоянная защита · локальный движок паттернов в сочетании с FastAPI инференсом.</string>
@@ -247,6 +264,19 @@
     <string name="report_filter_high_risk_desc">Угрозы с вероятностью > 70%%</string>
     <string name="report_filter_24h">Последние 24 часа</string>
     <string name="report_filter_24h_desc">Недавние угрозы за сегодня</string>
+
+    <!-- ── История: панель экспорта ─────────────────────────────────── -->
+    <string name="export_button">ЭКСПОРТ</string>
+    <string name="export_sheet_title">Экспорт угроз</string>
+    <string name="export_format_pdf">Экспорт PDF</string>
+    <string name="export_format_pdf_desc">Форматированный отчёт безопасности</string>
+    <string name="export_format_csv">Экспорт CSV</string>
+    <string name="export_format_csv_desc">Формат таблицы для Excel</string>
+    <string name="export_format_json">Экспорт JSON</string>
+    <string name="export_format_json_desc">Данные для разработчиков</string>
+    <string name="export_generating">Создание…</string>
+    <string name="export_error">Ошибка экспорта: %s</string>
+    <string name="export_share_chooser">Поделиться файлом экспорта</string>
 
     <!-- ── Overlay alert card ────────────────────────────────────────── -->
     <string name="overlay_scam_detected">МОШЕННИЧЕСТВО ОБНАРУЖЕНО</string>
@@ -348,9 +378,156 @@
     <string name="call_explain_trusted">Этот номер в списке доверенных контактов.</string>
     <string name="call_explain_lead">У %1$s обнаружены следующие индикаторы риска:</string>
 
+    <!-- ── About screen ─────────────────────────────────────────── -->
+    <string name="about_title">О ПРИЛОЖЕНИИ</string>
+    <string name="about_app_desc">AI-защита от мошенников в реальном времени</string>
+    <string name="about_section_contacts">КОНТАКТЫ</string>
+    <string name="about_support_label">Поддержка</string>
+    <string name="about_support_email">support@scamshield.app</string>
+    <string name="about_section_documents">ДОКУМЕНТЫ</string>
+    <string name="about_terms">Условия использования</string>
+    <string name="about_copyright">© 2024 ScamShield. Все права защищены.</string>
+    <string name="settings_about_open">О приложении</string>
+    <string name="settings_about_open_desc">Контакты, документы и версия</string>
+
+    <!-- ── Ready screen ──────────────────────────────────────────── -->
+    <string name="ready_title_protected">Вы защищены!</string>
+    <string name="ready_desc_protected">ScamShield активен и следит за угрозами.</string>
+    <string name="ready_desc_partial">Выдайте оставшиеся разрешения для полной защиты.</string>
+    <string name="ready_services_title">СТАТУС СЕРВИСОВ</string>
+
+    <!-- ── Privacy Policy ─────────────────────────────────────── -->
+    <string name="privacy_title">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</string>
+    <string name="privacy_version">ScamShield · v1.0 · Вступает в силу немедленно</string>
+    <string name="privacy_section_collected">КАКИЕ ДАННЫЕ СОБИРАЮТСЯ</string>
+    <string name="privacy_collected_body">ScamShield обрабатывает следующие данные локально на вашем устройстве:\n\n• Текст сообщений из WhatsApp, Telegram, SMS и браузера — только для анализа\n• Имена отправителей и идентификаторы приложений\n• Входящие телефонные номера для оценки риска звонков\n• Настройки приложения и пороги обнаружения\n• История угроз — хранится в локальной базе данных на устройстве</string>
+    <string name="privacy_section_usage">КАК ИСПОЛЬЗУЮТСЯ ДАННЫЕ</string>
+    <string name="privacy_usage_body">Все собранные данные используются исключительно для:\n\n• Обнаружения мошеннических сообщений и звонков в реальном времени\n• Отображения предупреждений о рисках и оверлеев\n• Ведения локальной истории угроз для просмотра\n• Создания PDF-отчётов по запросу\n\nДанные не используются для рекламы, профилирования и не передаются третьим лицам.</string>
+    <string name="privacy_section_server">ЧТО ОТПРАВЛЯЕТСЯ НА СЕРВЕР</string>
+    <string name="privacy_server_body">Только при включённом режиме «Серверный ИИ» или «Гибридный»:\n\n• Текст сообщения и имя отправителя передаются на сервер анализа ScamShield\n• Данные контактов, телефонные номера и идентификаторы устройства не передаются\n• Каждый запрос не имеет состояния — сервер не хранит историю\n\nВ режиме «Локальный движок» ничего не покидает ваше устройство.</string>
+    <string name="privacy_section_delete">КАК УДАЛИТЬ ДАННЫЕ</string>
+    <string name="privacy_delete_body">• История угроз: Настройки → Данные → выберите срок хранения или вручную очистите записи на вкладке «История»\n• Данные сервера: Ничего не хранится — каждый запрос анонимен и немедленно удаляется\n• Полное удаление: Удалите ScamShield, чтобы стереть локальную базу данных и все кэшированные данные с устройства</string>
+    <string name="privacy_agree">Я ознакомился и согласен с политикой конфиденциальности</string>
+    <string name="privacy_read_link">Читать политику конфиденциальности →</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_privacy_policy_desc">Подробности о сборе и использовании данных</string>
+    <string name="settings_crash_reporting">Отправка отчётов об ошибках</string>
+    <string name="settings_crash_reporting_desc">Помогите улучшить ScamShield, отправляя анонимные отчёты об ошибках через Firebase Crashlytics</string>
+
+    <!-- ── Blocked Numbers ──────────────────────────────────────── -->
+    <string name="blocked_title">ЗАБЛОКИРОВАННЫЕ НОМЕРА</string>
+    <string name="blocked_count">%d номеров</string>
+    <string name="blocked_empty">Заблокированных номеров нет.</string>
+    <string name="blocked_add_title">Заблокировать номер</string>
+    <string name="blocked_add_hint">Номер телефона</string>
+    <string name="blocked_at">Добавлен %s</string>
+    <string name="blocked_delete_title">Удалить номер?</string>
+    <string name="blocked_delete_message">Удалить %s из списка блокировок?</string>
+    <string name="blocked_delete_confirm">Удалить</string>
+
+    <!-- ── Trusted Contacts ──────────────────────────────────────── -->
+    <string name="trusted_title">ДОВЕРЕННЫЕ КОНТАКТЫ</string>
+    <string name="trusted_count">%d контактов</string>
+    <string name="trusted_empty">Доверенных контактов нет. Добавьте номера, которые никогда не должны блокироваться.</string>
+    <string name="trusted_add_title">Добавить доверенный контакт</string>
+    <string name="trusted_add_number_hint">Номер телефона</string>
+    <string name="trusted_add_name_hint">Имя (необязательно)</string>
+    <string name="trusted_added_at">Добавлен %s</string>
+    <string name="trusted_delete_title">Удалить контакт?</string>
+    <string name="trusted_delete_message">Удалить %s из доверенных контактов?</string>
+    <string name="trusted_delete_confirm">Удалить</string>
+
+    <!-- ── Contact management shared ────────────────────────────── -->
+    <string name="contacts_add">ДОБАВИТЬ</string>
+    <string name="contacts_cancel">Отмена</string>
+    <string name="settings_call_lists">СПИСКИ ЗВОНКОВ</string>
+    <string name="settings_blocked_numbers">Заблокированные номера</string>
+    <string name="settings_blocked_numbers_desc">Управление автоматически блокируемыми звонками</string>
+    <string name="settings_trusted_contacts">Доверенные контакты</string>
+    <string name="settings_trusted_contacts_desc">Номера, обходящие обнаружение мошенников</string>
+
+    <!-- ── Feedback ─────────────────────────────────────────────── -->
+    <string name="feedback_button">Это не мошенник</string>
+    <string name="feedback_title">Почему это не мошенничество?</string>
+    <string name="feedback_reason_known_company">Это мой банк / знакомая компания</string>
+    <string name="feedback_reason_friend">Это сообщение от друга/родственника</string>
+    <string name="feedback_reason_other">Другая причина</string>
+    <string name="feedback_comment_hint">Опишите причину…</string>
+    <string name="feedback_submit">Отправить</string>
+    <string name="feedback_cancel">Отмена</string>
+    <string name="feedback_toast">Спасибо! Это поможет улучшить защиту</string>
+
     <!-- ── Foreground service notification ───────────────────── -->
     <string name="notif_channel_name">Защита ScamShield</string>
     <string name="notif_channel_description">Постоянный индикатор мониторинга сообщений ScamShield.</string>
     <string name="notif_protection_active">Защита ScamShield активна</string>
     <string name="notif_monitoring_text">Мониторинг сообщений на мошенничество в режиме реального времени.</string>
+    <string name="notif_protection_paused">ScamShield приостановлен</string>
+    <string name="notif_paused_text">Сканирование приостановлено на 1 час. Нажмите «Возобновить» для перезапуска.</string>
+    <string name="notif_action_history">История угроз</string>
+    <string name="notif_action_pause">Приостановить на 1 час</string>
+    <string name="notif_action_resume">Возобновить</string>
+
+    <!-- ── Haptic & sound feedback ──────────────────────────── -->
+    <string name="settings_vibrate_threats">Вибрация при угрозах</string>
+    <string name="settings_vibrate_threats_desc">Вибрировать при появлении оверлея с угрозой</string>
+    <string name="settings_sound_critical">Звук при критических угрозах</string>
+    <string name="settings_sound_critical_desc">Воспроизводить звук уведомления при критических угрозах (≥ 90 %)</string>
+
+    <!-- ── Threat alert notification ─────────────────────────── -->
+    <string name="notif_threats_channel_name">ScamShield: Угрозы</string>
+    <string name="notif_threats_channel_description">Срочные оповещения при обнаружении мошенников.</string>
+    <string name="notif_threat_title">Обнаружена угроза — %s</string>
+    <string name="notif_threat_action_details">Подробнее</string>
+    <string name="notif_threat_action_block">Заблокировать отправителя</string>
+
+    <!-- ── Quick Settings Tile ──────────────────────────────── -->
+    <string name="tile_label_on">ScamShield: Вкл</string>
+    <string name="tile_label_off">ScamShield: Выкл</string>
+    <string name="tile_subtitle_on">Защита активна</string>
+    <string name="tile_subtitle_off">Защита отключена</string>
+
+    <!-- ── Language setting ───────────────────────────────── -->
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_desc">Изменить язык отображения приложения</string>
+
+    <!-- ── ExplainabilityEngine analysis reason strings ──── -->
+    <string name="explain_signal_otp">обнаружена OTP-мошенническая схема</string>
+    <string name="explain_signal_banking">язык банковского самозванства</string>
+    <string name="explain_signal_urgency">тактика срочности / давления</string>
+    <string name="explain_signal_social">язык социальной инженерии</string>
+    <string name="explain_signal_sender">подозрительный отправитель</string>
+    <string name="explain_ai_confidence_patterns">Уверенность ИИ %1$d%% — на основе лингвистических паттернов. Риск: %2$s.</string>
+    <string name="explain_ai_confidence_detected">Уверенность ИИ %1$d%% — обнаружен %2$s: %3$s. Риск: %4$s.</string>
+    <string name="explain_ai_offline">ИИ офлайн — результат на основе локального анализа.</string>
+
+    <!-- ── App update ───────────────────────────────────── -->
+    <string name="update_flexible_available">Доступно обновление</string>
+    <string name="update_action_install">Обновить</string>
+    <string name="update_check_settings_title">Проверить обновления</string>
+    <string name="update_check_settings_desc">Проверить наличие новой версии в Google Play</string>
+    <string name="update_no_update">У вас актуальная версия</string>
+
+    <!-- ── AppWidget ─────────────────────────────────────── -->
+    <string name="widget_status_protected">Защищён</string>
+    <string name="widget_status_off">Неактивен</string>
+    <string name="widget_no_threats_today">Угроз сегодня нет</string>
+    <string name="widget_description">Статус защиты ScamShield и количество угроз за день</string>
+    <plurals name="widget_threats_today">
+        <item quantity="one">%d угроза сегодня</item>
+        <item quantity="few">%d угрозы сегодня</item>
+        <item quantity="other">%d угроз сегодня</item>
+    </plurals>
+
+    <!-- ── Plural forms for signal counts ────────────────── -->
+    <plurals name="explain_signal_links">
+        <item quantity="one">%d подозрительная ссылка</item>
+        <item quantity="few">%d подозрительных ссылки</item>
+        <item quantity="other">%d подозрительных ссылок</item>
+    </plurals>
+    <plurals name="explain_signal_phishing_cues">
+        <item quantity="one">%d фишинговый признак</item>
+        <item quantity="few">%d фишинговых признака</item>
+        <item quantity="other">%d фишинговых признаков</item>
+    </plurals>
 </resources>

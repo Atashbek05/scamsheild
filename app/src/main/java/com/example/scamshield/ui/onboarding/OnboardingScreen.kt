@@ -3,6 +3,7 @@ package com.example.scamshield.ui.onboarding
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -24,12 +26,17 @@ import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,8 +50,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scamshield.R
 import com.example.scamshield.ui.theme.CyberBgDeep
+import com.example.scamshield.ui.theme.CyberBgSurface
 import com.example.scamshield.ui.theme.CyberCyan
 import com.example.scamshield.ui.theme.CyberGreen
+import com.example.scamshield.ui.theme.CyberTextMuted
 import com.example.scamshield.ui.theme.CyberTextPrimary
 import com.example.scamshield.ui.theme.CyberTextSecondary
 import kotlinx.coroutines.launch
@@ -57,7 +66,7 @@ private data class OnboardingPage(
 )
 
 @Composable
-fun OnboardingScreen(onFinish: () -> Unit) {
+fun OnboardingScreen(onFinish: () -> Unit, onOpenPrivacyPolicy: () -> Unit = {}) {
     val pages = listOf(
         OnboardingPage(Icons.Rounded.Shield,              stringResource(R.string.onboarding_page1_title), stringResource(R.string.onboarding_page1_body), CyberCyan),
         OnboardingPage(Icons.Rounded.Bolt,               stringResource(R.string.onboarding_page2_title), stringResource(R.string.onboarding_page2_body), CyberGreen),
@@ -67,6 +76,8 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope      = rememberCoroutineScope()
+    var privacyAccepted by rememberSaveable { mutableStateOf(false) }
+    val isLastPage = pagerState.currentPage == pages.lastIndex
 
     Column(
         Modifier
@@ -75,12 +86,16 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             .padding(24.dp),
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onFinish) {
-                Text(
-                    stringResource(R.string.onboarding_skip),
-                    color    = CyberTextSecondary,
-                    fontSize = 13.sp,
-                )
+            if (!isLastPage) {
+                TextButton(onClick = onFinish) {
+                    Text(
+                        stringResource(R.string.onboarding_skip),
+                        color    = CyberTextSecondary,
+                        fontSize = 13.sp,
+                    )
+                }
+            } else {
+                Spacer(Modifier.height(48.dp))
             }
         }
 
@@ -129,6 +144,43 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                     textAlign  = TextAlign.Center,
                     lineHeight = 22.sp,
                 )
+                if (page == pages.lastIndex) {
+                    Spacer(Modifier.height(24.dp))
+                    TextButton(onClick = onOpenPrivacyPolicy) {
+                        Text(
+                            stringResource(R.string.privacy_read_link),
+                            color    = CyberCyan,
+                            fontSize = 13.sp,
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(CyberBgSurface)
+                            .clickable { privacyAccepted = !privacyAccepted }
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(
+                            checked         = privacyAccepted,
+                            onCheckedChange = { privacyAccepted = it },
+                            colors          = CheckboxDefaults.colors(
+                                checkedColor   = CyberCyan,
+                                uncheckedColor = CyberTextMuted,
+                                checkmarkColor = CyberBgDeep,
+                            ),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.privacy_agree),
+                            color      = CyberTextSecondary,
+                            fontSize   = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                    }
+                }
             }
         }
 
@@ -166,11 +218,14 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 if (pagerState.currentPage == pages.lastIndex) onFinish()
                 else scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
             },
+            enabled  = if (isLastPage) privacyAccepted else true,
             modifier = Modifier.fillMaxWidth().height(52.dp),
             shape  = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = CyberCyan,
-                contentColor   = CyberBgDeep,
+                containerColor         = CyberCyan,
+                contentColor           = CyberBgDeep,
+                disabledContainerColor = CyberCyan.copy(alpha = 0.25f),
+                disabledContentColor   = CyberBgDeep.copy(alpha = 0.5f),
             ),
         ) {
             Text(

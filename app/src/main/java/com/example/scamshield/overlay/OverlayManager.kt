@@ -12,6 +12,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import com.example.scamshield.util.logD
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
@@ -200,6 +201,8 @@ object OverlayManager {
             isActive      = true
             packageCooldowns[data.packageName] = now
 
+            ThreatFeedback.fire(appContext, data.probability)
+
             // Prime off-screen position before the first draw so there is no flash
             view.translationY = -(320 * density)
             view.alpha        = 0f
@@ -222,6 +225,7 @@ object OverlayManager {
             )
         } catch (e: Exception) {
             Log.e(TAG, "WindowManager.addView failed: ${e.message}", e)
+            FirebaseCrashlytics.getInstance().recordException(e)
             isActive = false   // Reset so the next event can try again
         }
     }

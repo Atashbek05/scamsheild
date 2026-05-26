@@ -14,6 +14,7 @@ import com.example.scamshield.data.settings.Sensitivity
 import com.example.scamshield.data.settings.SettingsRepository
 import com.example.scamshield.data.settings.UserSettings
 import com.example.scamshield.repository.ThreatRepository
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -39,6 +40,12 @@ class SettingsViewModel(
     fun setBackendUrl(value: String) = viewModelScope.launch { repo.setBackendUrl(value) }
     fun setAutoScanEnabled(value: Boolean) = viewModelScope.launch { repo.setAutoScanEnabled(value) }
     fun setActiveProtection(value: Boolean) = viewModelScope.launch { repo.setActiveProtection(value) }
+    fun setVibrationEnabled(value: Boolean) = viewModelScope.launch { repo.setVibrationEnabled(value) }
+    fun setSoundOnCritical(value: Boolean)  = viewModelScope.launch { repo.setSoundOnCritical(value) }
+    fun setCrashReportingEnabled(value: Boolean) = viewModelScope.launch {
+        repo.setCrashReportingEnabled(value)
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(value)
+    }
     fun completeOnboarding() = viewModelScope.launch { repo.setOnboardingComplete(true) }
     fun setHistoryRetention(value: HistoryRetention) = viewModelScope.launch {
         repo.setHistoryRetention(value)

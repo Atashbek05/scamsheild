@@ -39,6 +39,9 @@ class SettingsRepository private constructor(context: Context) {
         val ONBOARDING_COMPLETE   = booleanPreferencesKey("onboarding_complete")
         val ACTIVE_PROTECTION     = booleanPreferencesKey("active_protection")
         val HISTORY_RETENTION     = stringPreferencesKey("history_retention")
+        val VIBRATION_ENABLED     = booleanPreferencesKey("vibration_enabled")
+        val SOUND_ON_CRITICAL     = booleanPreferencesKey("sound_on_critical")
+        val CRASH_REPORTING       = booleanPreferencesKey("crash_reporting")
     }
 
     val settings: Flow<UserSettings> = ds.data
@@ -71,6 +74,9 @@ class SettingsRepository private constructor(context: Context) {
             historyRetention     = runCatching {
                 HistoryRetention.valueOf(this[Keys.HISTORY_RETENTION] ?: HistoryRetention.NINETY.name)
             }.getOrDefault(HistoryRetention.NINETY),
+            vibrationEnabled      = this[Keys.VIBRATION_ENABLED] ?: true,
+            soundOnCritical       = this[Keys.SOUND_ON_CRITICAL] ?: false,
+            crashReportingEnabled = this[Keys.CRASH_REPORTING] ?: true,
         )
     }
 
@@ -88,6 +94,9 @@ class SettingsRepository private constructor(context: Context) {
     suspend fun setOnboardingComplete(value: Boolean)     = ds.edit { it[Keys.ONBOARDING_COMPLETE] = value }
     suspend fun setActiveProtection(value: Boolean)       = ds.edit { it[Keys.ACTIVE_PROTECTION] = value }
     suspend fun setHistoryRetention(value: HistoryRetention) = ds.edit { it[Keys.HISTORY_RETENTION] = value.name }
+    suspend fun setVibrationEnabled(value: Boolean)         = ds.edit { it[Keys.VIBRATION_ENABLED] = value }
+    suspend fun setSoundOnCritical(value: Boolean)          = ds.edit { it[Keys.SOUND_ON_CRITICAL] = value }
+    suspend fun setCrashReportingEnabled(value: Boolean)    = ds.edit { it[Keys.CRASH_REPORTING] = value }
 
     companion object {
         @Volatile

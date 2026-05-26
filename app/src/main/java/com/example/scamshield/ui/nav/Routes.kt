@@ -16,7 +16,12 @@ object Routes {
     const val Dashboard    = "dashboard"
     const val History      = "history"
     const val Settings     = "settings"
-    const val ThreatDetail = "threat_detail"
+    const val ThreatDetail  = "threat_detail"
+    const val PrivacyPolicy    = "privacy_policy"
+    const val Ready            = "ready"
+    const val About            = "about"
+    const val BlockedNumbers   = "blocked_numbers"
+    const val TrustedContacts  = "trusted_contacts"
 }
 
 enum class MainTab(

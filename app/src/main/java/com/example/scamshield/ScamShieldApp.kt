@@ -1,6 +1,12 @@
 package com.example.scamshield
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class ScamShieldApp : Application() {
 
@@ -11,6 +17,11 @@ class ScamShieldApp : Application() {
         super.onCreate()
         instance = this
         container = AppContainer(this)
+        FirebaseApp.initializeApp(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            val enabled = container.settingsRepository.settings.first().crashReportingEnabled
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(enabled)
+        }
     }
 
     companion object {

@@ -47,13 +47,13 @@ class DashboardViewModel(
         threatRepo.observeCount(),
         threatRepo.observeHighRiskCount(),
         threatRepo.observeCountSince(today),
-    ) { ai, scanned, total, high, today ->
+    ) { ai: AiConnectionState, scanned: Int, total: Int, high: Int, todayCount: Int ->
         State(
             aiState = ai,
             totalScanned = scanned,
             totalThreats = total,
             highRiskCount = high,
-            threatsToday = today,
+            threatsToday = todayCount,
         )
     }.combine(MonitoringStore.activeServices) { s, services ->
         s.copy(activeServiceCount = services.size)

@@ -20,6 +20,9 @@
     <!-- Required by some OEMs to keep the foreground service running. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- Haptic feedback when the scam overlay fires. Normal permission — no user prompt. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <!-- Call protection: read incoming phone state + call log to analyse callers. -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
@@ -45,7 +48,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.ScamShield.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -109,6 +113,41 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
+        </receiver>
+
+        <!-- Handles notification action button intents (pause / resume scanning). -->
+        <receiver
+            android:name=".service.NotificationActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.scamshield.ACTION_PAUSE_SCAN" />
+                <action android:name="com.example.scamshield.ACTION_RESUME_SCAN" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Quick Settings Tile: toggle ScamShield protection from the notification shade. -->
+        <service
+            android:name=".service.ScamShieldTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_tile_shield_on"
+            android:label="@string/tile_label_on"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- AppWidget: protection status + daily threat count on the home screen. -->
+        <receiver
+            android:name=".widget.ScamShieldWidget"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
         </receiver>
 
         <!-- FileProvider for sharing generated PDF reports. -->

@@ -18,15 +18,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.Block
 import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material.icons.rounded.Psychology
 import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material.icons.rounded.VerifiedUser
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -45,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,15 +73,23 @@ import com.example.scamshield.ui.theme.CyberBgDeep
 import com.example.scamshield.ui.theme.CyberBgSurface
 import com.example.scamshield.ui.theme.CyberCyan
 import com.example.scamshield.ui.theme.CyberGreen
+import com.example.scamshield.ui.theme.CyberRed
 import com.example.scamshield.ui.theme.CyberTextMuted
 import com.example.scamshield.ui.theme.CyberTextPrimary
 import com.example.scamshield.ui.theme.CyberTextSecondary
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    onOpenPrivacyPolicy: () -> Unit = {},
+    onOpenAbout: () -> Unit = {},
+    onOpenBlockedNumbers: () -> Unit = {},
+    onOpenTrustedContacts: () -> Unit = {},
+    onCheckForUpdates: (() -> Unit)? = null,
+) {
     val vm: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)
     val settings by vm.settings.collectAsStateWithLifecycle()
     var backendDraft by remember(settings.backendUrl) { mutableStateOf(settings.backendUrl) }
+    val context = LocalContext.current
 
     Column(
         Modifier
@@ -141,9 +158,11 @@ fun SettingsScreen() {
         }
 
         SettingSection(icon = Icons.Rounded.Notifications, title = stringResource(R.string.settings_notifications)) {
-            ToggleRow(stringResource(R.string.settings_notif_enable),   stringResource(R.string.settings_notif_enable_desc),   settings.notificationsEnabled, vm::setNotificationsEnabled)
-            ToggleRow(stringResource(R.string.settings_notif_sound),    stringResource(R.string.settings_notif_sound_desc),    settings.notificationSound,    vm::setNotificationSound)
-            ToggleRow(stringResource(R.string.settings_notif_vibrate),  stringResource(R.string.settings_notif_vibrate_desc), settings.notificationVibrate,  vm::setNotificationVibrate)
+            ToggleRow(stringResource(R.string.settings_notif_enable),     stringResource(R.string.settings_notif_enable_desc),     settings.notificationsEnabled, vm::setNotificationsEnabled)
+            ToggleRow(stringResource(R.string.settings_notif_sound),      stringResource(R.string.settings_notif_sound_desc),      settings.notificationSound,    vm::setNotificationSound)
+            ToggleRow(stringResource(R.string.settings_notif_vibrate),    stringResource(R.string.settings_notif_vibrate_desc),    settings.notificationVibrate,  vm::setNotificationVibrate)
+            ToggleRow(stringResource(R.string.settings_vibrate_threats),  stringResource(R.string.settings_vibrate_threats_desc),  settings.vibrationEnabled,     vm::setVibrationEnabled)
+            ToggleRow(stringResource(R.string.settings_sound_critical),   stringResource(R.string.settings_sound_critical_desc),   settings.soundOnCritical,      vm::setSoundOnCritical)
         }
 
         SettingSection(icon = Icons.Rounded.Warning, title = stringResource(R.string.settings_overlay_warnings)) {
@@ -194,6 +213,20 @@ fun SettingsScreen() {
                     onClick = { vm.setDarkMode(m) },
                 )
             }
+            Spacer(Modifier.height(4.dp))
+            NavRow(
+                icon        = Icons.Rounded.Language,
+                iconTint    = CyberCyan,
+                label       = stringResource(R.string.settings_language),
+                description = stringResource(R.string.settings_language_desc),
+                onClick     = {
+                    context.startActivity(
+                        Intent(Settings.ACTION_LOCALE_SETTINGS).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                    )
+                },
+            )
         }
 
         SettingSection(icon = Icons.Rounded.Cloud, title = stringResource(R.string.settings_backend)) {
@@ -253,10 +286,91 @@ fun SettingsScreen() {
             )
         }
 
+        SettingSection(icon = Icons.Rounded.Phone, title = stringResource(R.string.settings_call_lists)) {
+            NavRow(
+                icon        = Icons.Rounded.Block,
+                iconTint    = CyberRed,
+                label       = stringResource(R.string.settings_blocked_numbers),
+                description = stringResource(R.string.settings_blocked_numbers_desc),
+                onClick     = onOpenBlockedNumbers,
+            )
+            Spacer(Modifier.height(2.dp))
+            NavRow(
+                icon        = Icons.Rounded.VerifiedUser,
+                iconTint    = CyberGreen,
+                label       = stringResource(R.string.settings_trusted_contacts),
+                description = stringResource(R.string.settings_trusted_contacts_desc),
+                onClick     = onOpenTrustedContacts,
+            )
+        }
+
         SettingSection(icon = Icons.Rounded.Bolt, title = stringResource(R.string.settings_about)) {
+            ToggleRow(
+                label       = stringResource(R.string.settings_crash_reporting),
+                description = stringResource(R.string.settings_crash_reporting_desc),
+                value       = settings.crashReportingEnabled,
+                onChange    = vm::setCrashReportingEnabled,
+            )
+            Spacer(Modifier.height(8.dp))
             Text(stringResource(R.string.settings_about_version), color = CyberTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(4.dp))
             Text(stringResource(R.string.settings_about_desc), color = CyberTextSecondary, fontSize = 12.sp, lineHeight = 16.sp)
+            if (onCheckForUpdates != null) {
+                Spacer(Modifier.height(2.dp))
+                NavRow(
+                    icon        = Icons.Rounded.SystemUpdate,
+                    iconTint    = CyberCyan,
+                    label       = stringResource(R.string.update_check_settings_title),
+                    description = stringResource(R.string.update_check_settings_desc),
+                    onClick     = onCheckForUpdates,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = onOpenPrivacyPolicy)
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    Modifier
+                        .size(28.dp)
+                        .background(CyberCyan.copy(alpha = 0.1f), CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(Icons.Rounded.Shield, null, tint = CyberCyan, modifier = Modifier.size(14.dp))
+                }
+                Spacer(Modifier.size(10.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.settings_privacy_policy), color = CyberCyan, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.settings_privacy_policy_desc), color = CyberTextSecondary, fontSize = 11.sp)
+                }
+            }
+            Spacer(Modifier.height(2.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = onOpenAbout)
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    Modifier
+                        .size(28.dp)
+                        .background(CyberCyan.copy(alpha = 0.1f), CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(Icons.Rounded.Info, null, tint = CyberCyan, modifier = Modifier.size(14.dp))
+                }
+                Spacer(Modifier.size(10.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.settings_about_open), color = CyberCyan, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.settings_about_open_desc), color = CyberTextSecondary, fontSize = 11.sp)
+                }
+            }
         }
 
         Spacer(Modifier.height(32.dp))
@@ -367,6 +481,38 @@ private fun ChoiceChip(label: String, selected: Boolean, onClick: () -> Unit) {
             fontSize   = 11.sp,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
         )
+    }
+}
+
+@Composable
+private fun NavRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconTint: androidx.compose.ui.graphics.Color,
+    label: String,
+    description: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier
+                .size(28.dp)
+                .background(iconTint.copy(alpha = 0.1f), CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(icon, null, tint = iconTint, modifier = Modifier.size(14.dp))
+        }
+        Spacer(Modifier.size(10.dp))
+        Column(Modifier.weight(1f)) {
+            Text(label, color = CyberCyan, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            Text(description, color = CyberTextSecondary, fontSize = 11.sp)
+        }
     }
 }
 

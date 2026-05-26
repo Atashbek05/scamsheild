@@ -3,6 +3,7 @@ package com.example.scamshield
 import android.content.Context
 import com.example.scamshield.data.settings.SettingsRepository
 import com.example.scamshield.repository.CallRepository
+import com.example.scamshield.repository.FeedbackRepository
 import com.example.scamshield.repository.ScamAnalysisRepository
 import com.example.scamshield.repository.ThreatRepository
 
@@ -18,4 +19,5 @@ class AppContainer(context: Context) {
     val settingsRepository: SettingsRepository = SettingsRepository.get(context)
     val analysisRepository: ScamAnalysisRepository = ScamAnalysisRepository()
     val callRepository: CallRepository = CallRepository.get(context)
+    val feedbackRepository: FeedbackRepository = FeedbackRepository.get(context)
 }

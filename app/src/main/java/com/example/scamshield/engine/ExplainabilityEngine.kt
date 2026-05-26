@@ -1,7 +1,11 @@
 package com.example.scamshield.engine
 
+import android.content.Context
+import android.util.Log
+import com.example.scamshield.R
 import com.example.scamshield.util.logD
 import com.example.scamshield.data.AnalysisSource
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.example.scamshield.data.RiskLevel
 import com.example.scamshield.data.ThreatCategory
 import com.example.scamshield.data.ThreatExplanation
@@ -38,11 +42,27 @@ object ExplainabilityEngine {
     )
 
     fun analyze(
+        context: Context,
         message: String,
         senderRaw: String,
         backendKeywords: List<String>,
         backendProbability: Float,
         backendOffline: Boolean = false,
+    ): Result = try {
+        analyzeInternal(context, message, senderRaw, backendKeywords, backendProbability, backendOffline)
+    } catch (e: Exception) {
+        Log.e(TAG, "Unexpected error in analyze(): ${e.message}", e)
+        FirebaseCrashlytics.getInstance().recordException(e)
+        throw e
+    }
+
+    private fun analyzeInternal(
+        context: Context,
+        message: String,
+        senderRaw: String,
+        backendKeywords: List<String>,
+        backendProbability: Float,
+        backendOffline: Boolean,
     ): Result {
         val lower = message.lowercase()
 
@@ -79,6 +99,7 @@ object ExplainabilityEngine {
                      else pickSource(backendKeywords, hasLocal = scored.signalCount > 0)
 
         val baseReason = buildReason(
+            context = context,
             category = scored.category,
             risk = scored.riskLevel,
             confidence = scored.confidence,
@@ -91,7 +112,7 @@ object ExplainabilityEngine {
             senderSuspicious = senderRep.tier == SenderReputation.Tier.SUSPICIOUS,
         )
         val overallReason = if (backendOffline)
-            "$baseReason AI офлайн — результат на основе локального анализа."
+            "$baseReason ${context.getString(R.string.explain_ai_offline)}"
         else baseReason
 
         val explanation = ThreatExplanation(
@@ -127,11 +148,14 @@ object ExplainabilityEngine {
      * Backward-compat shim — the old [explain] signature is still used by
      * services that haven't been re-routed yet. New code should call [analyze].
      */
+    @Suppress("unused")
     fun explain(
+        context: Context,
         message: String,
         backendKeywords: List<String>,
         probability: Float,
     ): ThreatExplanation = analyze(
+        context = context,
         message = message,
         senderRaw = "",
         backendKeywords = backendKeywords,
@@ -145,6 +169,7 @@ object ExplainabilityEngine {
     }
 
     private fun buildReason(
+        context: Context,
         category: ThreatCategory,
         risk: RiskLevel,
         confidence: Float,
@@ -157,18 +182,20 @@ object ExplainabilityEngine {
         senderSuspicious: Boolean,
     ): String {
         val pct = (confidence * 100).toInt()
+        val res = context.resources
         val parts = buildList {
-            if (linkCount > 0)       add("$linkCount suspicious link${if (linkCount > 1) "s" else ""}")
-            if (phishingCount > 0)   add("$phishingCount phishing cue${if (phishingCount > 1) "s" else ""}")
-            if (otpCount > 0)        add("OTP-scam pattern detected")
-            if (bankingCount > 0)    add("banking impersonation language")
-            if (urgencyCount > 0)    add("urgency / pressure tactics")
-            if (socialCount > 0)     add("social-engineering language")
-            if (senderSuspicious)    add("suspicious sender")
+            if (linkCount > 0)       add(res.getQuantityString(R.plurals.explain_signal_links, linkCount, linkCount))
+            if (phishingCount > 0)   add(res.getQuantityString(R.plurals.explain_signal_phishing_cues, phishingCount, phishingCount))
+            if (otpCount > 0)        add(context.getString(R.string.explain_signal_otp))
+            if (bankingCount > 0)    add(context.getString(R.string.explain_signal_banking))
+            if (urgencyCount > 0)    add(context.getString(R.string.explain_signal_urgency))
+            if (socialCount > 0)     add(context.getString(R.string.explain_signal_social))
+            if (senderSuspicious)    add(context.getString(R.string.explain_signal_sender))
         }
+        val riskLabel = context.getString(risk.labelRes)
         if (parts.isEmpty())
-            return "AI confidence $pct% — based on linguistic patterns. Risk: ${risk.label}."
-        return "AI confidence $pct% — ${category.label} detected: " +
-            "${parts.joinToString(", ")}. Risk: ${risk.label}."
+            return context.getString(R.string.explain_ai_confidence_patterns, pct, riskLabel)
+        val categoryLabel = context.getString(category.labelRes)
+        return context.getString(R.string.explain_ai_confidence_detected, pct, categoryLabel, parts.joinToString(", "), riskLabel)
     }
 }

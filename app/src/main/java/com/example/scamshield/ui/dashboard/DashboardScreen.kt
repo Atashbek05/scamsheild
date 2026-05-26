@@ -26,21 +26,32 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Block
 import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.ErrorOutline
+import androidx.compose.material.icons.rounded.HourglassEmpty
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Psychology
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.SignalWifiOff
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -100,6 +111,9 @@ fun DashboardScreen(
     val recentThreats by vm.recentThreatsFlow.collectAsStateWithLifecycle(initialValue = emptyList())
     val recentScans  by vm.recentScans.collectAsStateWithLifecycle()
 
+    var isInitialLoad by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) { delay(600); isInitialLoad = false }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -110,10 +124,10 @@ fun DashboardScreen(
         TopBar(onRefresh = onRefreshPermissions)
         Spacer(Modifier.height(16.dp))
 
-        ProtectionHero(state)
+        if (isInitialLoad) SkeletonHeroCard() else ProtectionHero(state)
         Spacer(Modifier.height(14.dp))
 
-        StatsGrid(state)
+        if (isInitialLoad) SkeletonStatsGrid() else StatsGrid(state)
         Spacer(Modifier.height(14.dp))
 
         LiveMonitorCard(liveEvent, recentScans, state.aiState)
@@ -180,8 +194,14 @@ private fun TopBar(onRefresh: () -> Unit) {
 
 @Composable
 private fun ProtectionHero(state: DashboardViewModel.State) {
-    val online = state.aiState is AiConnectionState.Online
-    val accent = if (online && state.activeServiceCount > 0) CyberGreen else CyberAmber
+    val isConnected = state.aiState is AiConnectionState.Online || state.aiState is AiConnectionState.Slow
+    val accent = when {
+        state.aiState is AiConnectionState.Online && state.activeServiceCount > 0 -> CyberGreen
+        state.aiState is AiConnectionState.Slow        -> CyberCyan
+        state.aiState is AiConnectionState.RateLimited -> CyberAmber
+        state.aiState is AiConnectionState.Error       -> CyberRed
+        else                                           -> CyberAmber
+    }
     val infinite = rememberInfiniteTransition(label = "ring")
     val sweep by infinite.animateFloat(
         0f, 360f,
@@ -222,7 +242,7 @@ private fun ProtectionHero(state: DashboardViewModel.State) {
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(
-                    stringResource(if (online) R.string.dashboard_active_protection else R.string.dashboard_standby),
+                    stringResource(if (isConnected) R.string.dashboard_active_protection else R.string.dashboard_standby),
                     color         = accent,
                     fontWeight    = FontWeight.Bold,
                     fontSize      = 15.sp,
@@ -231,14 +251,20 @@ private fun ProtectionHero(state: DashboardViewModel.State) {
                 Spacer(Modifier.height(3.dp))
                 Text(
                     when {
-                        online && state.activeServiceCount >= 2 ->
+                        state.aiState is AiConnectionState.Online && state.activeServiceCount >= 2 ->
                             stringResource(R.string.dashboard_ai_online_engines, state.activeServiceCount)
-                        online ->
+                        state.aiState is AiConnectionState.Online ->
                             stringResource(R.string.dashboard_ai_online_waiting)
+                        state.aiState is AiConnectionState.Slow ->
+                            stringResource(R.string.dashboard_slow_response)
+                        state.aiState is AiConnectionState.RateLimited ->
+                            stringResource(R.string.dashboard_server_rate_limited)
                         state.aiState is AiConnectionState.Connecting ->
                             stringResource(R.string.dashboard_connecting)
                         state.aiState is AiConnectionState.Offline ->
                             stringResource(R.string.dashboard_backend_offline)
+                        state.aiState is AiConnectionState.Throttled ->
+                            stringResource(R.string.dashboard_rate_limited)
                         else ->
                             stringResource(R.string.dashboard_initialising)
                     },
@@ -299,7 +325,14 @@ private fun LiveMonitorCard(
             NeonProgressBar()
         } else {
             Text(
-                stringResource(if (ai is AiConnectionState.Online) R.string.dashboard_no_scan else R.string.dashboard_engine_idle),
+                stringResource(
+                    when (ai) {
+                        is AiConnectionState.Online,
+                        is AiConnectionState.Slow,
+                        is AiConnectionState.RateLimited -> R.string.dashboard_no_scan
+                        else -> R.string.dashboard_engine_idle
+                    },
+                ),
                 color    = CyberTextSecondary,
                 fontSize = 12.sp,
             )
@@ -436,14 +469,20 @@ private fun AiEngineCard(state: DashboardViewModel.State, onRunTest: () -> Unit)
                 letterSpacing = 1.sp,
                 modifier      = Modifier.weight(1f),
             )
-            val (label, chipColor) = when (state.aiState) {
-                is AiConnectionState.Online     -> stringResource(R.string.ai_state_online)     to CyberGreen
-                is AiConnectionState.Connecting -> stringResource(R.string.ai_state_connecting) to CyberCyan
-                is AiConnectionState.Offline    -> stringResource(R.string.ai_state_offline)    to CyberAmber
-                is AiConnectionState.Error      -> stringResource(R.string.ai_state_error)      to CyberRed
-                is AiConnectionState.Idle       -> stringResource(R.string.ai_state_idle)       to CyberTextSecondary
+            data class StateInfo(val label: String, val color: Color, val icon: ImageVector)
+            val stateInfo = when (state.aiState) {
+                is AiConnectionState.Online      -> StateInfo(stringResource(R.string.ai_state_online),        CyberGreen,         Icons.Rounded.CheckCircle)
+                is AiConnectionState.Slow        -> StateInfo(stringResource(R.string.ai_state_slow),          CyberCyan,          Icons.Rounded.HourglassEmpty)
+                is AiConnectionState.RateLimited -> StateInfo(stringResource(R.string.ai_state_rate_limited),  CyberAmber,         Icons.Rounded.Block)
+                is AiConnectionState.Connecting  -> StateInfo(stringResource(R.string.ai_state_connecting),    CyberCyan,          Icons.Rounded.Sync)
+                is AiConnectionState.Offline     -> StateInfo(stringResource(R.string.ai_state_offline),       CyberAmber,         Icons.Rounded.SignalWifiOff)
+                is AiConnectionState.Throttled   -> StateInfo(stringResource(R.string.ai_state_throttled),     CyberAmber,         Icons.Rounded.Block)
+                is AiConnectionState.Error       -> StateInfo(stringResource(R.string.ai_state_error),         CyberRed,           Icons.Rounded.ErrorOutline)
+                is AiConnectionState.Idle        -> StateInfo(stringResource(R.string.ai_state_idle),          CyberTextSecondary, Icons.Rounded.Sensors)
             }
-            NeonChip(label, accent = chipColor)
+            Icon(stateInfo.icon, null, tint = stateInfo.color, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.size(6.dp))
+            NeonChip(stateInfo.label, accent = stateInfo.color)
         }
         Spacer(Modifier.height(10.dp))
         Text(stringResource(R.string.dashboard_ai_desc), color = CyberTextSecondary, fontSize = 12.sp, lineHeight = 17.sp)
@@ -491,7 +530,26 @@ private fun RecentThreatsCard(recent: List<com.example.scamshield.data.DetectedT
         }
         Spacer(Modifier.height(12.dp))
         if (recent.isEmpty()) {
-            Text(stringResource(R.string.dashboard_no_threats), color = CyberTextSecondary, fontSize = 12.sp)
+            Row(
+                Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    Modifier
+                        .size(32.dp)
+                        .background(CyberGreen.copy(alpha = 0.12f), CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(Icons.Rounded.CheckCircle, null, tint = CyberGreen, modifier = Modifier.size(18.dp))
+                }
+                Spacer(Modifier.width(10.dp))
+                Text(
+                    stringResource(R.string.dashboard_no_active_threats),
+                    color      = CyberGreen,
+                    fontSize   = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
         } else {
             recent.take(5).forEach { threat ->
                 ThreatRow(threat)
@@ -552,5 +610,73 @@ private fun ThreatRow(threat: com.example.scamshield.data.DetectedThreat) {
                 }
             }
         }
+    }
+}
+
+// ── Skeleton / shimmer loading state ─────────────────────────────────────────
+
+@Composable
+private fun shimmerBrush(): Brush {
+    val t = rememberInfiniteTransition(label = "shimmer")
+    val x by t.animateFloat(
+        initialValue  = -300f,
+        targetValue   = 900f,
+        animationSpec = infiniteRepeatable(tween(1100, easing = LinearEasing)),
+        label         = "sx",
+    )
+    return Brush.linearGradient(
+        colors = listOf(CyberBgCard, CyberBgSurface, CyberBgCard),
+        start  = Offset(x, 0f),
+        end    = Offset(x + 300f, 0f),
+    )
+}
+
+@Composable
+private fun SkeletonHeroCard() {
+    val brush = shimmerBrush()
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(CyberBgCard)
+            .padding(16.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(92.dp).clip(CircleShape).background(brush))
+            Spacer(Modifier.size(14.dp))
+            Column(Modifier.weight(1f)) {
+                Box(Modifier.fillMaxWidth(0.55f).height(14.dp).clip(RoundedCornerShape(5.dp)).background(brush))
+                Spacer(Modifier.height(8.dp))
+                Box(Modifier.fillMaxWidth(0.8f).height(11.dp).clip(RoundedCornerShape(5.dp)).background(brush))
+                Spacer(Modifier.height(14.dp))
+                Box(Modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(5.dp)).background(brush))
+            }
+        }
+    }
+}
+
+@Composable
+private fun SkeletonStatsGrid() {
+    val brush = shimmerBrush()
+    @Composable fun Tile(mod: Modifier) {
+        Box(
+            mod
+                .clip(RoundedCornerShape(12.dp))
+                .background(CyberBgCard)
+                .padding(14.dp),
+        ) {
+            Column {
+                Box(Modifier.fillMaxWidth(0.55f).height(10.dp).clip(RoundedCornerShape(4.dp)).background(brush))
+                Spacer(Modifier.height(8.dp))
+                Box(Modifier.fillMaxWidth(0.4f).height(26.dp).clip(RoundedCornerShape(4.dp)).background(brush))
+            }
+        }
+    }
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Tile(Modifier.weight(1f)); Tile(Modifier.weight(1f))
+    }
+    Spacer(Modifier.height(10.dp))
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Tile(Modifier.weight(1f)); Tile(Modifier.weight(1f))
     }
 }

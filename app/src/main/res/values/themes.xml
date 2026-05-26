@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Base app theme — Compose owns the actual UI, this just turns off the system ActionBar. -->
     <style name="Theme.ScamShield" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!--
+        Starting theme applied to MainActivity via android:theme in the manifest.
+        The SplashScreen API reads windowSplash* attributes to render the OS-level
+        splash instantly (before setContent). postSplashScreenTheme switches back
+        to the real app theme once the splash exits.
+    -->
+    <style name="Theme.ScamShield.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0F1628</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">#0F1628</item>
+        <item name="postSplashScreenTheme">@style/Theme.ScamShield</item>
+    </style>
+
 </resources>

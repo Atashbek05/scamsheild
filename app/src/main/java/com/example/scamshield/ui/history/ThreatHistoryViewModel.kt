@@ -11,18 +11,22 @@ import androidx.paging.cachedIn
 import com.example.scamshield.R
 import com.example.scamshield.ScamShieldApp
 import com.example.scamshield.data.RiskLevel
+import com.example.scamshield.data.db.FeedbackEntity
 import com.example.scamshield.data.db.ThreatEntity
+import com.example.scamshield.repository.FeedbackRepository
 import com.example.scamshield.repository.ThreatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ThreatHistoryViewModel(
     private val repo: ThreatRepository,
+    private val feedbackRepo: FeedbackRepository,
 ) : ViewModel() {
 
     enum class DateRange(val label: String, val sinceMillis: Long?, @StringRes val labelRes: Int) {
@@ -67,10 +71,32 @@ class ThreatHistoryViewModel(
         viewModelScope.launch { repo.clearAll() }
     }
 
+    suspend fun getFilteredThreats(): List<ThreatEntity> {
+        val f = _filters.value
+        val since = f.range.sinceMillis?.let { System.currentTimeMillis() - it }
+        return repo.search(
+            packageFilter  = f.app,
+            minProbability = f.minRisk?.threshold,
+            since          = since,
+            query          = f.query.ifBlank { null },
+        ).first()
+    }
+
+    fun submitFeedback(threatId: Long, reason: String, comment: String) {
+        viewModelScope.launch {
+            feedbackRepo.insert(
+                FeedbackEntity(threatId = threatId, reason = reason, comment = comment)
+            )
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                ThreatHistoryViewModel(ScamShieldApp.container().threatRepository)
+                ThreatHistoryViewModel(
+                    ScamShieldApp.container().threatRepository,
+                    ScamShieldApp.container().feedbackRepository,
+                )
             }
         }
     }

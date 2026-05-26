@@ -25,6 +25,9 @@ data class UserSettings(
     val onboardingComplete: Boolean = false,
     val activeProtection: Boolean = true,
     val historyRetention: HistoryRetention = HistoryRetention.NINETY,
+    val vibrationEnabled: Boolean = true,
+    val soundOnCritical: Boolean = false,
+    val crashReportingEnabled: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_BACKEND_URL = "https://scamsheil-backend.onrender.com/"

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.scamshield.util.logD
 import com.example.scamshield.ScamShieldApp
+import com.example.scamshield.data.AiConnectionState
 import com.example.scamshield.data.DetectedThreat
 import com.example.scamshield.data.MonitoringEvent
 import com.example.scamshield.data.MonitoringStore
@@ -13,9 +14,11 @@ import com.example.scamshield.data.ScanStatus
 import com.example.scamshield.data.ThreatStore
 import com.example.scamshield.engine.ExplainabilityEngine
 import com.example.scamshield.overlay.OverlayManager
+import com.example.scamshield.widget.ScamShieldWidget
 import com.example.scamshield.overlay.toOverlayData
 import com.example.scamshield.repository.BackendUnavailableException
 import com.example.scamshield.repository.ScamAnalysisRepository
+import com.example.scamshield.repository.ThrottledException
 import com.example.scamshield.repository.ThreatRepository
 import com.example.scamshield.util.AnalysisCooldown
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +45,7 @@ abstract class BaseMessageAnalysisService {
 
     fun analyzeAndReport(text: String, packageName: String, appName: String) {
         if (text.isBlank()) return
+        if (ScanPauseManager.isPaused()) return
         if (!AnalysisCooldown.shouldAllow(packageName, text)) return
 
         val scanId     = System.nanoTime()
@@ -112,6 +116,7 @@ abstract class BaseMessageAnalysisService {
                     if (overlayData == null) return@fold
 
                     val analysis = ExplainabilityEngine.analyze(
+                        context            = appContext,
                         message            = text,
                         senderRaw          = "",
                         backendKeywords    = response.suspiciousKeywords,
@@ -131,6 +136,7 @@ abstract class BaseMessageAnalysisService {
                     runCatching {
                         threatRepo.insert(threat, appName, analysis.category, response.label)
                     }.onFailure { Log.w(tag, "Persist failed: ${it.message}") }
+                    ScamShieldWidget.updateAll(appContext)
 
                     logD(
                         tag,
@@ -140,11 +146,21 @@ abstract class BaseMessageAnalysisService {
                     )
 
                     OverlayManager.showWarning(appContext, overlayData)
+
+                    if (analysis.riskLevel == RiskLevel.HIGH || analysis.riskLevel == RiskLevel.CRITICAL) {
+                        ThreatNotificationHelper.postThreatNotification(
+                            context        = appContext,
+                            category       = analysis.category,
+                            messagePreview = overlayData.messagePreview,
+                            sourcePackage  = packageName,
+                        )
+                    }
                 },
                 onFailure = { e ->
-                    ThreatStore.setAiConnected(false)
-                    if (e is BackendUnavailableException) {
+                    // Shared fallback: run local detectors and commit the scan result.
+                    val runLocalFallback: (logTag: String) -> Unit = { logSuffix ->
                         val analysis = ExplainabilityEngine.analyze(
+                            context            = appContext,
                             message            = text,
                             senderRaw          = "",
                             backendKeywords    = emptyList(),
@@ -164,20 +180,34 @@ abstract class BaseMessageAnalysisService {
                                 source      = monitorSource,
                             ),
                         )
-                        logD(tag, "Monitor: OFFLINE-LOCAL | pkg=$packageName | risk=${analysis.riskLevel} | prob=${"%.3f".format(analysis.finalProbability)}")
-                    } else {
-                        MonitoringStore.commitScan(
-                            MonitoringEvent(
-                                id          = scanId,
-                                packageName = packageName,
-                                appLabel    = quickLabel,
-                                textPreview = preview,
-                                status      = ScanStatus.ERROR,
-                                source      = monitorSource,
-                            ),
-                        )
-                        logD(tag, "Monitor: ERROR | pkg=$packageName")
-                        Log.w(tag, "Analysis failed for $packageName — AI marked offline")
+                        logD(tag, "Monitor: $logSuffix | pkg=$packageName | risk=${analysis.riskLevel} | prob=${"%.3f".format(analysis.finalProbability)}")
+                    }
+
+                    when (e) {
+                        is ThrottledException -> {
+                            // Rate limited — backend is reachable, so don't mark it offline.
+                            ThreatStore.setAiConnectionState(AiConnectionState.Throttled)
+                            runLocalFallback("THROTTLED-LOCAL")
+                        }
+                        is BackendUnavailableException -> {
+                            ThreatStore.setAiConnected(false)
+                            runLocalFallback("OFFLINE-LOCAL")
+                        }
+                        else -> {
+                            ThreatStore.setAiConnected(false)
+                            MonitoringStore.commitScan(
+                                MonitoringEvent(
+                                    id          = scanId,
+                                    packageName = packageName,
+                                    appLabel    = quickLabel,
+                                    textPreview = preview,
+                                    status      = ScanStatus.ERROR,
+                                    source      = monitorSource,
+                                ),
+                            )
+                            logD(tag, "Monitor: ERROR | pkg=$packageName")
+                            Log.w(tag, "Analysis failed for $packageName — AI marked offline")
+                        }
                     }
                 },
             )

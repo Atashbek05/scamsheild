@@ -11,14 +11,16 @@ import androidx.room.RoomDatabase
         CallEntity::class,
         BlockedNumberEntity::class,
         TrustedContactEntity::class,
+        FeedbackEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false,
 )
 abstract class ScamShieldDatabase : RoomDatabase() {
 
     abstract fun threatDao(): ThreatDao
     abstract fun callDao(): CallDao
+    abstract fun feedbackDao(): FeedbackDao
 
     companion object {
         private const val DB_NAME = "scamshield.db"
@@ -33,7 +35,7 @@ abstract class ScamShieldDatabase : RoomDatabase() {
                     ScamShieldDatabase::class.java,
                     DB_NAME,
                 )
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(dropAllTables = false)
                     .build()
                     .also { INSTANCE = it }
             }

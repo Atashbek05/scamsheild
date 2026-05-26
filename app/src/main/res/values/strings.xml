@@ -45,6 +45,9 @@
     <string name="dashboard_ai_online_waiting">AI online · waiting for services</string>
     <string name="dashboard_connecting">Connecting to server…</string>
     <string name="dashboard_backend_offline">Server offline · using local engine</string>
+    <string name="dashboard_rate_limited">Local mode (high load) · rate limit active</string>
+    <string name="dashboard_slow_response">Backend slow · cold start in progress</string>
+    <string name="dashboard_server_rate_limited">Server rate limited · retrying in 30 s</string>
     <string name="dashboard_initialising">Initialising engine</string>
     <string name="dashboard_metric_scanned">scanned</string>
     <string name="dashboard_metric_threats">threats</string>
@@ -72,8 +75,11 @@
 
     <!-- ── AI connection state chips ─────────────────────────── -->
     <string name="ai_state_online">ONLINE</string>
+    <string name="ai_state_slow">SLOW</string>
+    <string name="ai_state_rate_limited">RATE LIMITED</string>
     <string name="ai_state_connecting">CONNECTING</string>
     <string name="ai_state_offline">OFFLINE</string>
+    <string name="ai_state_throttled">THROTTLED</string>
     <string name="ai_state_error">ERROR</string>
     <string name="ai_state_idle">IDLE</string>
 
@@ -99,6 +105,9 @@
     <string name="history_section_ai">AI ANALYSIS</string>
     <string name="history_delete">DELETE</string>
     <string name="history_empty">No threats match the current filters.</string>
+    <string name="history_empty_title">No Threats Detected</string>
+    <string name="history_empty_body">Your phone is protected. All scanned messages are clean.</string>
+    <string name="dashboard_no_active_threats">No active threats — all clear</string>
 
     <!-- ── Analytics ──────────────────────────────────────────── -->
     <string name="analytics_title">ANALYTICS</string>
@@ -172,14 +181,14 @@
     <string name="settings_backend">SERVER</string>
     <string name="settings_backend_url">Server URL</string>
     <string name="settings_save">SAVE</string>
-    <string name="settings_data">ДАННЫЕ</string>
-    <string name="settings_history_retention">Хранить историю угроз</string>
-    <string name="retention_30">30 дней</string>
-    <string name="retention_60">60 дней</string>
-    <string name="retention_90">90 дней</string>
-    <string name="retention_forever">Навсегда</string>
-    <string name="retention_desc_days">Записи старше %1$d дней удаляются при смене настройки</string>
-    <string name="retention_desc_forever">История хранится без ограничений</string>
+    <string name="settings_data">DATA</string>
+    <string name="settings_history_retention">Store threat history</string>
+    <string name="retention_30">30 days</string>
+    <string name="retention_60">60 days</string>
+    <string name="retention_90">90 days</string>
+    <string name="retention_forever">Forever</string>
+    <string name="retention_desc_days">Records older than %1$d days are deleted when this setting changes</string>
+    <string name="retention_desc_forever">History stored without a limit</string>
 
     <string name="settings_about">ABOUT</string>
     <string name="settings_about_version">ScamShield · v1.0</string>
@@ -256,6 +265,19 @@
     <string name="report_filter_high_risk_desc">Threats with probability > 70%%</string>
     <string name="report_filter_24h">Last 24 Hours</string>
     <string name="report_filter_24h_desc">Recent threats from today</string>
+
+    <!-- ── History export bottom sheet ─────────────────────────── -->
+    <string name="export_button">EXPORT</string>
+    <string name="export_sheet_title">Export Threats</string>
+    <string name="export_format_pdf">Export PDF</string>
+    <string name="export_format_pdf_desc">Formatted security report</string>
+    <string name="export_format_csv">Export CSV</string>
+    <string name="export_format_csv_desc">Spreadsheet format for Excel</string>
+    <string name="export_format_json">Export JSON</string>
+    <string name="export_format_json_desc">Machine-readable data for developers</string>
+    <string name="export_generating">Generating…</string>
+    <string name="export_error">Export failed: %s</string>
+    <string name="export_share_chooser">Share export file</string>
 
     <!-- ── Overlay alert card ─────────────────────────────────── -->
     <string name="overlay_scam_detected">SCAM DETECTED</string>
@@ -357,9 +379,153 @@
     <string name="call_explain_trusted">This number is in your trusted contacts list.</string>
     <string name="call_explain_lead">The following risk indicators were found for %1$s:</string>
 
+    <!-- ── About screen ─────────────────────────────────────────── -->
+    <string name="about_title">ABOUT</string>
+    <string name="about_app_desc">Real-time AI protection against scams</string>
+    <string name="about_section_contacts">CONTACTS</string>
+    <string name="about_support_label">Support</string>
+    <string name="about_support_email">support@scamshield.app</string>
+    <string name="about_section_documents">DOCUMENTS</string>
+    <string name="about_terms">Terms of Use</string>
+    <string name="about_copyright">© 2024 ScamShield. All rights reserved.</string>
+    <string name="settings_about_open">About App</string>
+    <string name="settings_about_open_desc">Contacts, documents &amp; version</string>
+
+    <!-- ── Ready screen ──────────────────────────────────────────── -->
+    <string name="ready_title_protected">You\'re Protected!</string>
+    <string name="ready_desc_protected">ScamShield is active and monitoring for threats.</string>
+    <string name="ready_desc_partial">Grant the remaining permissions to enable full protection.</string>
+    <string name="ready_services_title">SERVICE STATUS</string>
+
+    <!-- ── Privacy Policy ─────────────────────────────────────── -->
+    <string name="privacy_title">PRIVACY POLICY</string>
+    <string name="privacy_version">ScamShield · v1.0 · Effective immediately</string>
+    <string name="privacy_section_collected">DATA COLLECTED</string>
+    <string name="privacy_collected_body">ScamShield processes the following data locally on your device:\n\n• Message text from WhatsApp, Telegram, SMS and browsers — for scam analysis only\n• Sender names and app package identifiers\n• Incoming phone numbers for call risk scoring\n• App settings and detection thresholds\n• Threat history — stored in a local database on your device</string>
+    <string name="privacy_section_usage">HOW DATA IS USED</string>
+    <string name="privacy_usage_body">All collected data is used solely to:\n\n• Detect scam messages and calls in real time\n• Display risk warnings and overlay alerts\n• Maintain a local threat history for your review\n• Generate PDF security reports on request\n\nNo data is used for advertising, profiling or shared with third parties.</string>
+    <string name="privacy_section_server">WHAT IS SENT TO THE SERVER</string>
+    <string name="privacy_server_body">Only when Backend AI or Hybrid scan mode is enabled:\n\n• Message text and sender name are sent to the ScamShield analysis server for AI scoring\n• No contact data, phone numbers or device identifiers are transmitted\n• Each request is stateless — the server retains no history\n\nIn Local engine mode, nothing leaves your device.</string>
+    <string name="privacy_section_delete">HOW TO DELETE YOUR DATA</string>
+    <string name="privacy_delete_body">• Threat history: Settings → Data → choose a retention period, or clear records manually in the History tab\n• Server data: Nothing is stored — each request is anonymous and discarded immediately\n• Complete removal: Uninstall ScamShield to erase the local database and all cached data from your device</string>
+    <string name="privacy_agree">I have read and agree to the Privacy Policy</string>
+    <string name="privacy_read_link">Read Privacy Policy →</string>
+    <string name="settings_privacy_policy">Privacy Policy</string>
+    <string name="settings_privacy_policy_desc">View data collection and usage details</string>
+    <string name="settings_crash_reporting">Send Crash Reports</string>
+    <string name="settings_crash_reporting_desc">Help improve ScamShield by sending anonymous crash reports via Firebase Crashlytics</string>
+
+    <!-- ── Blocked Numbers ──────────────────────────────────────── -->
+    <string name="blocked_title">BLOCKED NUMBERS</string>
+    <string name="blocked_count">%d numbers</string>
+    <string name="blocked_empty">No blocked numbers yet.</string>
+    <string name="blocked_add_title">Block a number</string>
+    <string name="blocked_add_hint">Phone number</string>
+    <string name="blocked_at">Added %s</string>
+    <string name="blocked_delete_title">Remove number?</string>
+    <string name="blocked_delete_message">Remove %s from the blocked list?</string>
+    <string name="blocked_delete_confirm">Remove</string>
+
+    <!-- ── Trusted Contacts ──────────────────────────────────────── -->
+    <string name="trusted_title">TRUSTED CONTACTS</string>
+    <string name="trusted_count">%d contacts</string>
+    <string name="trusted_empty">No trusted contacts yet. Add numbers that should never be blocked.</string>
+    <string name="trusted_add_title">Add trusted contact</string>
+    <string name="trusted_add_number_hint">Phone number</string>
+    <string name="trusted_add_name_hint">Name (optional)</string>
+    <string name="trusted_added_at">Added %s</string>
+    <string name="trusted_delete_title">Remove contact?</string>
+    <string name="trusted_delete_message">Remove %s from trusted contacts?</string>
+    <string name="trusted_delete_confirm">Remove</string>
+
+    <!-- ── Contact management shared ────────────────────────────── -->
+    <string name="contacts_add">ADD</string>
+    <string name="contacts_cancel">Cancel</string>
+    <string name="settings_call_lists">CALL LISTS</string>
+    <string name="settings_blocked_numbers">Blocked Numbers</string>
+    <string name="settings_blocked_numbers_desc">Manage automatically blocked calls</string>
+    <string name="settings_trusted_contacts">Trusted Contacts</string>
+    <string name="settings_trusted_contacts_desc">Numbers that bypass scam detection</string>
+
+    <!-- ── Feedback ─────────────────────────────────────────────── -->
+    <string name="feedback_button">Not a scam</string>
+    <string name="feedback_title">Why is this not a scam?</string>
+    <string name="feedback_reason_known_company">This is my bank / known company</string>
+    <string name="feedback_reason_friend">Message from a friend or relative</string>
+    <string name="feedback_reason_other">Other reason</string>
+    <string name="feedback_comment_hint">Describe the reason…</string>
+    <string name="feedback_submit">Submit</string>
+    <string name="feedback_cancel">Cancel</string>
+    <string name="feedback_toast">Thank you! This helps improve protection.</string>
+
     <!-- ── Foreground service notification ───────────────────── -->
     <string name="notif_channel_name">ScamShield Protection</string>
     <string name="notif_channel_description">Persistent ScamShield message-monitoring indicator.</string>
     <string name="notif_protection_active">ScamShield protection active</string>
     <string name="notif_monitoring_text">Monitoring messages for scams in real time.</string>
+    <string name="notif_protection_paused">ScamShield paused</string>
+    <string name="notif_paused_text">Scanning paused for 1 hour. Tap Resume to reactivate.</string>
+    <string name="notif_action_history">Threat History</string>
+    <string name="notif_action_pause">Pause 1 hour</string>
+    <string name="notif_action_resume">Resume</string>
+
+    <!-- ── Haptic & sound feedback ──────────────────────────── -->
+    <string name="settings_vibrate_threats">Vibration on threats</string>
+    <string name="settings_vibrate_threats_desc">Vibrate when the scam overlay appears</string>
+    <string name="settings_sound_critical">Sound on critical threats</string>
+    <string name="settings_sound_critical_desc">Play notification sound for critical scam detections (≥ 90 %)</string>
+
+    <!-- ── Threat alert notification ─────────────────────────── -->
+    <string name="notif_threats_channel_name">ScamShield Threat Alerts</string>
+    <string name="notif_threats_channel_description">High-priority alerts when a scam is detected.</string>
+    <string name="notif_threat_title">Threat detected — %s</string>
+    <string name="notif_threat_action_details">View Details</string>
+    <string name="notif_threat_action_block">Block Sender</string>
+
+    <!-- ── Quick Settings Tile ──────────────────────────────── -->
+    <string name="tile_label_on">ScamShield: On</string>
+    <string name="tile_label_off">ScamShield: Off</string>
+    <string name="tile_subtitle_on">Protection active</string>
+    <string name="tile_subtitle_off">Protection off</string>
+
+    <!-- ── Language setting ───────────────────────────────── -->
+    <string name="settings_language">Language</string>
+    <string name="settings_language_desc">Change app display language</string>
+
+    <!-- ── ExplainabilityEngine analysis reason strings ──── -->
+    <string name="explain_signal_otp">OTP-scam pattern detected</string>
+    <string name="explain_signal_banking">banking impersonation language</string>
+    <string name="explain_signal_urgency">urgency / pressure tactics</string>
+    <string name="explain_signal_social">social-engineering language</string>
+    <string name="explain_signal_sender">suspicious sender</string>
+    <string name="explain_ai_confidence_patterns">AI confidence %1$d%% — based on linguistic patterns. Risk: %2$s.</string>
+    <string name="explain_ai_confidence_detected">AI confidence %1$d%% — %2$s detected: %3$s. Risk: %4$s.</string>
+    <string name="explain_ai_offline">AI offline — result based on local analysis.</string>
+
+    <!-- ── App update ───────────────────────────────────── -->
+    <string name="update_flexible_available">Update available</string>
+    <string name="update_action_install">Update</string>
+    <string name="update_check_settings_title">Check for updates</string>
+    <string name="update_check_settings_desc">Check if a new version is available on Google Play</string>
+    <string name="update_no_update">You are on the latest version</string>
+
+    <!-- ── AppWidget ─────────────────────────────────────── -->
+    <string name="widget_status_protected">Protected</string>
+    <string name="widget_status_off">Inactive</string>
+    <string name="widget_no_threats_today">No threats today</string>
+    <string name="widget_description">ScamShield protection status and daily threat count</string>
+    <plurals name="widget_threats_today">
+        <item quantity="one">%d threat today</item>
+        <item quantity="other">%d threats today</item>
+    </plurals>
+
+    <!-- ── Plural forms for signal counts ────────────────── -->
+    <plurals name="explain_signal_links">
+        <item quantity="one">%d suspicious link</item>
+        <item quantity="other">%d suspicious links</item>
+    </plurals>
+    <plurals name="explain_signal_phishing_cues">
+        <item quantity="one">%d phishing cue</item>
+        <item quantity="other">%d phishing cues</item>
+    </plurals>
 </resources>
