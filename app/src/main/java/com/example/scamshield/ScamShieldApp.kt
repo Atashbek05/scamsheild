@@ -15,8 +15,8 @@ class ScamShieldApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
         container = AppContainer(this)
+        instance = this
         FirebaseApp.initializeApp(this)
         CoroutineScope(Dispatchers.IO).launch {
             val enabled = container.settingsRepository.settings.first().crashReportingEnabled

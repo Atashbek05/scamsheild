@@ -25,6 +25,8 @@ object MonitoringStore {
     private val _activeServices = MutableStateFlow<Set<MonitorSource>>(emptySet())
     val activeServices: StateFlow<Set<MonitorSource>> = _activeServices.asStateFlow()
 
+    private val commitLock = Any()
+
     /** Publish a new in-progress scan or overwrite the current one. */
     fun pushLiveEvent(event: MonitoringEvent) {
         _liveEvent.value = event
@@ -40,8 +42,10 @@ object MonitoringStore {
      * [event] to [recentScans].  Safe to call from any thread.
      */
     fun commitScan(event: MonitoringEvent) {
-        _liveEvent.update { current -> if (current?.id == event.id) null else current }
-        _recentScans.update { (listOf(event) + it).take(30) }
+        synchronized(commitLock) {
+            _liveEvent.update { current -> if (current?.id == event.id) null else current }
+            _recentScans.update { (listOf(event) + it).take(30) }
+        }
     }
 
     fun setServiceActive(source: MonitorSource, active: Boolean) {
