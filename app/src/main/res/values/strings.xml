@@ -201,8 +201,11 @@
 
     <!-- ── Nav tabs ───────────────────────────────────────────── -->
     <string name="tab_dashboard">Dashboard</string>
-    <string name="tab_history">History</string>
+    <string name="tab_ai_chat">AI Chat</string>
     <string name="tab_settings">Settings</string>
+
+    <!-- ── AI Chat screen ────────────────────────────────────── -->
+    <string name="chat_error_connection">Connection error. Please try again.</string>
 
     <!-- ── Risk levels ────────────────────────────────────────── -->
     <string name="risk_safe">Safe</string>

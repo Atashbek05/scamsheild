@@ -36,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.scamshield.R
 import com.example.scamshield.ui.nav.NavTarget
 import com.example.scamshield.ui.dashboard.DashboardScreen
-import com.example.scamshield.ui.history.ThreatHistoryScreen
+import com.example.scamshield.ui.chat.AiChatScreen
 import com.example.scamshield.ui.nav.MainTab
 import com.example.scamshield.ui.nav.Routes
 import com.example.scamshield.ui.settings.SettingsScreen
@@ -209,7 +209,7 @@ private fun MainShellNav(
                 onRefreshPermissions        = onRefreshPermissions,
             )
         }
-        composable(Routes.History)  { ThreatHistoryScreen() }
+        composable(Routes.AiChat)   { AiChatScreen() }
         composable(Routes.Settings) {
             SettingsScreen(
                 onOpenPrivacyPolicy   = onOpenPrivacyPolicy,

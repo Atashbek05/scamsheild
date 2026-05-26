@@ -200,8 +200,11 @@
 
     <!-- ── Nav tabs ───────────────────────────────────────────── -->
     <string name="tab_dashboard">Дашборд</string>
-    <string name="tab_history">История</string>
+    <string name="tab_ai_chat">AI Chat</string>
     <string name="tab_settings">Настройки</string>
+
+    <!-- ── AI Chat screen ────────────────────────────────────── -->
+    <string name="chat_error_connection">Ошибка соединения. Попробуйте снова.</string>
 
     <!-- ── Risk levels ────────────────────────────────────────── -->
     <string name="risk_safe">Безопасно</string>

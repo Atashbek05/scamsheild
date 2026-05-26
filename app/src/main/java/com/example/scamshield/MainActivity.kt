@@ -109,7 +109,6 @@ class MainActivity : ComponentActivity() {
 
     private fun handleNotificationIntent(intent: Intent?) {
         when (intent?.getStringExtra(ThreatNotificationHelper.EXTRA_NAVIGATE_TO)) {
-            ThreatNotificationHelper.NAV_HISTORY         -> NavTarget.inner.value = Routes.History
             ThreatNotificationHelper.NAV_BLOCKED_NUMBERS -> NavTarget.outer.value = Routes.BlockedNumbers
         }
     }
