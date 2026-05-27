@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.foundation.border
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.Block
@@ -71,6 +72,7 @@ import com.example.scamshield.ui.components.CyberCard
 import com.example.scamshield.ui.theme.CyberBgCard
 import com.example.scamshield.ui.theme.CyberBgDeep
 import com.example.scamshield.ui.theme.CyberBgSurface
+import com.example.scamshield.ui.theme.CyberBorder
 import com.example.scamshield.ui.theme.CyberCyan
 import com.example.scamshield.ui.theme.CyberGreen
 import com.example.scamshield.ui.theme.CyberRed
@@ -98,13 +100,37 @@ fun SettingsScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
-        Text(
-            stringResource(R.string.settings_title),
-            color         = CyberTextPrimary,
-            fontSize      = 20.sp,
-            fontWeight    = FontWeight.Bold,
-            letterSpacing = 0.sp,
-        )
+        // Premium header row
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                Modifier
+                    .size(42.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(CyberCyan.copy(alpha = 0.15f))
+                    .border(1.dp, CyberCyan.copy(alpha = 0.35f), RoundedCornerShape(14.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(Icons.Rounded.Tune, null, tint = CyberCyan, modifier = Modifier.size(22.dp))
+            }
+            Spacer(Modifier.size(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.settings_title),
+                    color         = CyberTextPrimary,
+                    fontWeight    = FontWeight.Bold,
+                    fontSize      = 20.sp,
+                    letterSpacing = 0.sp,
+                )
+                Text(
+                    stringResource(R.string.app_name),
+                    color    = CyberTextSecondary,
+                    fontSize = 11.sp,
+                )
+            }
+        }
         Spacer(Modifier.height(16.dp))
 
         SettingSection(icon = Icons.Rounded.Shield, title = stringResource(R.string.settings_active_protection)) {
@@ -387,11 +413,13 @@ private fun SettingSection(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 Modifier
-                    .size(32.dp)
-                    .background(CyberCyan.copy(alpha = 0.1f), CircleShape),
+                    .size(34.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(CyberCyan.copy(alpha = 0.15f))
+                    .border(1.dp, CyberCyan.copy(alpha = 0.3f), RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(icon, null, tint = CyberCyan, modifier = Modifier.size(16.dp))
+                Icon(icon, null, tint = CyberCyan, modifier = Modifier.size(17.dp))
             }
             Spacer(Modifier.size(10.dp))
             Text(

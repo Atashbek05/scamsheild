@@ -201,7 +201,7 @@
 
     <!-- ── Nav tabs ───────────────────────────────────────────── -->
     <string name="tab_dashboard">Dashboard</string>
-    <string name="tab_ai_chat">AI Chat</string>
+    <string name="tab_chat">AI Chat</string>
     <string name="tab_settings">Settings</string>
 
     <!-- ── AI Chat screen ────────────────────────────────────── -->

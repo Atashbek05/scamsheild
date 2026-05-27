@@ -7,6 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,8 +41,6 @@ import androidx.compose.material.icons.rounded.SignalWifiOff
 import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -78,12 +77,14 @@ import com.example.scamshield.ui.components.InlineMetrics
 import com.example.scamshield.ui.components.NeonChip
 import com.example.scamshield.ui.components.NeonProgressBar
 import com.example.scamshield.ui.components.NeonPulse
+import com.example.scamshield.ui.components.PremiumButton
 import com.example.scamshield.ui.components.StatTile
 import com.example.scamshield.ui.components.riskColor
 import com.example.scamshield.ui.theme.CyberAmber
 import com.example.scamshield.ui.theme.CyberBgCard
 import com.example.scamshield.ui.theme.CyberBgDeep
 import com.example.scamshield.ui.theme.CyberBgSurface
+import com.example.scamshield.ui.theme.CyberBorder
 import com.example.scamshield.ui.theme.CyberCyan
 import com.example.scamshield.ui.theme.CyberGreen
 import com.example.scamshield.ui.theme.CyberRed
@@ -114,78 +115,104 @@ fun DashboardScreen(
     var isInitialLoad by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) { delay(600); isInitialLoad = false }
 
-    Column(
+    Box(
         Modifier
             .fillMaxSize()
             .background(CyberBgDeep)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        TopBar(onRefresh = onRefreshPermissions)
-        Spacer(Modifier.height(16.dp))
+        // Gradient hero glow behind top content
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            CyberCyan.copy(alpha = 0.07f),
+                            Color.Transparent,
+                        )
+                    )
+                )
+        )
 
-        if (isInitialLoad) SkeletonHeroCard() else ProtectionHero(state)
-        Spacer(Modifier.height(14.dp))
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        ) {
+            PremiumTopBar(onRefresh = onRefreshPermissions)
+            Spacer(Modifier.height(16.dp))
 
-        if (isInitialLoad) SkeletonStatsGrid() else StatsGrid(state)
-        Spacer(Modifier.height(14.dp))
-
-        LiveMonitorCard(liveEvent, recentScans, state.aiState)
-        Spacer(Modifier.height(14.dp))
-
-        if (!(isNotificationGranted && isAccessibilityGranted && isOverlayGranted)) {
-            PermissionsBanner(
-                isNotificationGranted  = isNotificationGranted,
-                isAccessibilityGranted = isAccessibilityGranted,
-                isOverlayGranted       = isOverlayGranted,
-                onGrantNotificationClick  = onGrantNotificationClick,
-                onGrantAccessibilityClick = onGrantAccessibilityClick,
-                onGrantOverlayClick       = onGrantOverlayClick,
-            )
+            if (isInitialLoad) SkeletonHeroCard() else ProtectionHero(state)
             Spacer(Modifier.height(14.dp))
+
+            if (isInitialLoad) SkeletonStatsGrid() else StatsGrid(state)
+            Spacer(Modifier.height(14.dp))
+
+            LiveMonitorCard(liveEvent, recentScans, state.aiState)
+            Spacer(Modifier.height(14.dp))
+
+            if (!(isNotificationGranted && isAccessibilityGranted && isOverlayGranted)) {
+                PermissionsBanner(
+                    isNotificationGranted  = isNotificationGranted,
+                    isAccessibilityGranted = isAccessibilityGranted,
+                    isOverlayGranted       = isOverlayGranted,
+                    onGrantNotificationClick  = onGrantNotificationClick,
+                    onGrantAccessibilityClick = onGrantAccessibilityClick,
+                    onGrantOverlayClick       = onGrantOverlayClick,
+                )
+                Spacer(Modifier.height(14.dp))
+            }
+
+            AiEngineCard(state, onRunTest = vm::runAiTest)
+            Spacer(Modifier.height(14.dp))
+
+            RecentThreatsCard(recentThreats)
+            Spacer(Modifier.height(32.dp))
         }
-
-        AiEngineCard(state, onRunTest = vm::runAiTest)
-        Spacer(Modifier.height(14.dp))
-
-        RecentThreatsCard(recentThreats)
-        Spacer(Modifier.height(32.dp))
     }
 }
 
 @Composable
-private fun TopBar(onRefresh: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+private fun PremiumTopBar(onRefresh: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Box(
             Modifier
-                .size(38.dp)
-                .background(CyberCyan.copy(alpha = 0.12f), CircleShape),
+                .size(42.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(CyberCyan.copy(alpha = 0.15f))
+                .border(1.dp, CyberCyan.copy(alpha = 0.35f), RoundedCornerShape(14.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Rounded.Shield, null, tint = CyberCyan, modifier = Modifier.size(20.dp))
+            Icon(Icons.Rounded.Shield, null, tint = CyberCyan, modifier = Modifier.size(22.dp))
         }
-        Spacer(Modifier.size(10.dp))
+        Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(
                 stringResource(R.string.dashboard_title),
                 color         = CyberTextPrimary,
                 fontWeight    = FontWeight.Black,
-                fontSize      = 18.sp,
-                letterSpacing = 2.sp,
+                fontSize      = 20.sp,
+                letterSpacing = 1.sp,
             )
             Text(
                 stringResource(R.string.dashboard_subtitle),
                 color    = CyberTextSecondary,
                 fontSize = 11.sp,
-                letterSpacing = 0.5.sp,
             )
         }
         Box(
             Modifier
-                .clip(CircleShape)
-                .background(CyberBgSurface)
-                .clickable(onClick = onRefresh)
-                .padding(8.dp),
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(CyberBgCard)
+                .border(1.dp, CyberBorder, RoundedCornerShape(12.dp))
+                .clickable(onClick = onRefresh),
+            contentAlignment = Alignment.Center,
         ) {
             Icon(Icons.Rounded.Refresh, null, tint = CyberTextSecondary, modifier = Modifier.size(18.dp))
         }
@@ -211,23 +238,22 @@ private fun ProtectionHero(state: DashboardViewModel.State) {
 
     CyberCard(accent = accent) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Animated shield ring
             Box(Modifier.size(92.dp), contentAlignment = Alignment.Center) {
                 Canvas(Modifier.size(92.dp)) {
                     val s = size.minDimension
                     val r = s / 2f - 4f
-                    drawCircle(accent.copy(alpha = 0.08f), r)
+                    drawCircle(accent.copy(alpha = 0.10f), r)
                     drawArc(
                         color      = accent,
                         startAngle = sweep,
                         sweepAngle = 110f,
                         useCenter  = false,
-                        style      = Stroke(width = 3f, cap = StrokeCap.Round),
+                        style      = Stroke(width = 3.5f, cap = StrokeCap.Round),
                         topLeft    = Offset(4f, 4f),
                         size       = Size(s - 8f, s - 8f),
                     )
                     drawArc(
-                        color      = accent.copy(alpha = 0.25f),
+                        color      = accent.copy(alpha = 0.30f),
                         startAngle = sweep + 180f,
                         sweepAngle = 60f,
                         useCenter  = false,
@@ -235,20 +261,33 @@ private fun ProtectionHero(state: DashboardViewModel.State) {
                         topLeft    = Offset(4f, 4f),
                         size       = Size(s - 8f, s - 8f),
                     )
-                    drawCircle(accent.copy(alpha = 0.15f), r * 0.60f, style = Stroke(1.2f))
+                    drawCircle(accent.copy(alpha = 0.18f), r * 0.60f, style = Stroke(1.5f))
                 }
                 Icon(Icons.Rounded.Shield, null, tint = accent, modifier = Modifier.size(32.dp))
             }
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
-                Text(
-                    stringResource(if (isConnected) R.string.dashboard_active_protection else R.string.dashboard_standby),
-                    color         = accent,
-                    fontWeight    = FontWeight.Bold,
-                    fontSize      = 15.sp,
-                    letterSpacing = 1.sp,
-                )
-                Spacer(Modifier.height(3.dp))
+                // Floating status chip
+                Box(
+                    Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(accent.copy(alpha = 0.15f))
+                        .border(1.dp, accent.copy(alpha = 0.4f), RoundedCornerShape(20.dp))
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        NeonPulse(color = accent, diameter = 4.dp)
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            stringResource(if (isConnected) R.string.dashboard_active_protection else R.string.dashboard_standby),
+                            color         = accent,
+                            fontWeight    = FontWeight.Bold,
+                            fontSize      = 11.sp,
+                            letterSpacing = 0.5.sp,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(6.dp))
                 Text(
                     when {
                         state.aiState is AiConnectionState.Online && state.activeServiceCount >= 2 ->
@@ -270,6 +309,7 @@ private fun ProtectionHero(state: DashboardViewModel.State) {
                     },
                     color    = CyberTextSecondary,
                     fontSize = 12.sp,
+                    lineHeight = 16.sp,
                 )
                 Spacer(Modifier.height(10.dp))
                 InlineMetrics(
@@ -433,7 +473,7 @@ private fun PermissionRow(label: String, granted: Boolean, onClick: () -> Unit) 
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 3.dp),
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -447,7 +487,7 @@ private fun PermissionRow(label: String, granted: Boolean, onClick: () -> Unit) 
         if (!granted) {
             OutlinedButton(
                 onClick = onClick,
-                shape   = RoundedCornerShape(8.dp),
+                shape   = RoundedCornerShape(10.dp),
             ) {
                 Text(stringResource(R.string.perm_grant), color = CyberCyan, fontWeight = FontWeight.SemiBold, fontSize = 11.sp)
             }
@@ -491,16 +531,11 @@ private fun AiEngineCard(state: DashboardViewModel.State, onRunTest: () -> Unit)
             NeonProgressBar()
         }
         Spacer(Modifier.height(14.dp))
-        Button(
-            onClick  = onRunTest,
-            modifier = Modifier.fillMaxWidth().height(44.dp),
-            shape    = RoundedCornerShape(12.dp),
-            colors   = ButtonDefaults.buttonColors(containerColor = CyberCyan, contentColor = CyberBgDeep),
-        ) {
-            Icon(Icons.Rounded.PlayArrow, null, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.size(6.dp))
-            Text(stringResource(R.string.dashboard_run_test), fontWeight = FontWeight.Bold, fontSize = 13.sp)
-        }
+        PremiumButton(
+            label   = stringResource(R.string.dashboard_run_test),
+            onClick = onRunTest,
+            icon    = Icons.Rounded.PlayArrow,
+        )
     }
 }
 
@@ -521,7 +556,8 @@ private fun RecentThreatsCard(recent: List<com.example.scamshield.data.DetectedT
             if (recent.isNotEmpty()) {
                 Box(
                     Modifier
-                        .background(CyberRed.copy(alpha = 0.15f), CircleShape)
+                        .background(CyberRed.copy(alpha = 0.15f), RoundedCornerShape(20.dp))
+                        .border(1.dp, CyberRed.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                         .padding(horizontal = 8.dp, vertical = 3.dp),
                 ) {
                     Text("${recent.size}", color = CyberRed, fontSize = 11.sp, fontWeight = FontWeight.Bold)
@@ -536,8 +572,10 @@ private fun RecentThreatsCard(recent: List<com.example.scamshield.data.DetectedT
             ) {
                 Box(
                     Modifier
-                        .size(32.dp)
-                        .background(CyberGreen.copy(alpha = 0.12f), CircleShape),
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(CyberGreen.copy(alpha = 0.15f))
+                        .border(1.dp, CyberGreen.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(Icons.Rounded.CheckCircle, null, tint = CyberGreen, modifier = Modifier.size(18.dp))
@@ -567,10 +605,10 @@ private fun ThreatRow(threat: com.example.scamshield.data.DetectedThreat) {
         Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color.copy(alpha = 0.06f)),
+            .clip(RoundedCornerShape(12.dp))
+            .background(color.copy(alpha = 0.06f))
+            .border(1.dp, color.copy(alpha = 0.18f), RoundedCornerShape(12.dp)),
     ) {
-        // Left accent bar fills card height
         Box(
             Modifier
                 .width(3.dp)
@@ -580,7 +618,7 @@ private fun ThreatRow(threat: com.example.scamshield.data.DetectedThreat) {
         Column(
             Modifier
                 .weight(1f)
-                .padding(horizontal = 10.dp, vertical = 8.dp),
+                .padding(horizontal = 10.dp, vertical = 9.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -613,7 +651,7 @@ private fun ThreatRow(threat: com.example.scamshield.data.DetectedThreat) {
     }
 }
 
-// ── Skeleton / shimmer loading state ─────────────────────────────────────────
+// ── Skeleton / shimmer loaders ────────────────────────────────────────────────
 
 @Composable
 private fun shimmerBrush(): Brush {
@@ -637,7 +675,7 @@ private fun SkeletonHeroCard() {
     Box(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(CyberBgCard)
             .padding(16.dp),
     ) {
@@ -645,11 +683,11 @@ private fun SkeletonHeroCard() {
             Box(Modifier.size(92.dp).clip(CircleShape).background(brush))
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
-                Box(Modifier.fillMaxWidth(0.55f).height(14.dp).clip(RoundedCornerShape(5.dp)).background(brush))
+                Box(Modifier.fillMaxWidth(0.55f).height(14.dp).clip(RoundedCornerShape(6.dp)).background(brush))
                 Spacer(Modifier.height(8.dp))
-                Box(Modifier.fillMaxWidth(0.8f).height(11.dp).clip(RoundedCornerShape(5.dp)).background(brush))
+                Box(Modifier.fillMaxWidth(0.8f).height(11.dp).clip(RoundedCornerShape(6.dp)).background(brush))
                 Spacer(Modifier.height(14.dp))
-                Box(Modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(5.dp)).background(brush))
+                Box(Modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(6.dp)).background(brush))
             }
         }
     }
@@ -661,14 +699,14 @@ private fun SkeletonStatsGrid() {
     @Composable fun Tile(mod: Modifier) {
         Box(
             mod
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .background(CyberBgCard)
                 .padding(14.dp),
         ) {
             Column {
-                Box(Modifier.fillMaxWidth(0.55f).height(10.dp).clip(RoundedCornerShape(4.dp)).background(brush))
+                Box(Modifier.fillMaxWidth(0.55f).height(10.dp).clip(RoundedCornerShape(5.dp)).background(brush))
                 Spacer(Modifier.height(8.dp))
-                Box(Modifier.fillMaxWidth(0.4f).height(26.dp).clip(RoundedCornerShape(4.dp)).background(brush))
+                Box(Modifier.fillMaxWidth(0.4f).height(26.dp).clip(RoundedCornerShape(5.dp)).background(brush))
             }
         }
     }

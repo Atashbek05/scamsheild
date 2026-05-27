@@ -1,50 +1,40 @@
 package com.example.scamshield.ui.main
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scamshield.R
-import com.example.scamshield.ui.nav.NavTarget
-import com.example.scamshield.ui.dashboard.DashboardScreen
 import com.example.scamshield.ui.chat.AiChatScreen
+import com.example.scamshield.ui.components.AppNavigation
+import com.example.scamshield.ui.components.NavTabConfig
+import com.example.scamshield.ui.dashboard.DashboardScreen
 import com.example.scamshield.ui.nav.MainTab
+import com.example.scamshield.ui.nav.NavTarget
 import com.example.scamshield.ui.nav.Routes
 import com.example.scamshield.ui.settings.SettingsScreen
-import com.example.scamshield.ui.theme.CyberBgDeep
-import com.example.scamshield.ui.theme.CyberBgSurface
 import com.example.scamshield.ui.theme.CyberBgCard
+import com.example.scamshield.ui.theme.CyberBgDeep
 import com.example.scamshield.ui.theme.CyberCyan
-import com.example.scamshield.ui.theme.CyberTextMuted
 import com.example.scamshield.ui.theme.CyberTextPrimary
 import com.example.scamshield.util.AppUpdateState
 
@@ -79,7 +69,7 @@ fun MainShell(
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val flexibleSnackbar by AppUpdateState.showFlexibleSnackbar.collectAsStateWithLifecycle()
+    val flexibleSnackbar  by AppUpdateState.showFlexibleSnackbar.collectAsStateWithLifecycle()
     val updateMsg    = stringResource(R.string.update_flexible_available)
     val updateAction = stringResource(R.string.update_action_install)
 
@@ -96,6 +86,10 @@ fun MainShell(
         }
     }
 
+    val tabs = remember {
+        MainTab.entries.map { NavTabConfig(it.route, it.icon, it.labelRes) }
+    }
+
     Scaffold(
         containerColor = CyberBgDeep,
         snackbarHost = {
@@ -109,48 +103,17 @@ fun MainShell(
             }
         },
         bottomBar = {
-            NavigationBar(
-                modifier       = Modifier.height(64.dp),
-                containerColor = CyberBgSurface,
-                tonalElevation = 0.dp,
-            ) {
-                MainTab.entries.forEach { tab ->
-                    val selected = currentRoute == tab.route
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick  = {
-                            navController.navigate(tab.route) {
-                                popUpTo(Routes.Dashboard) { saveState = true }
-                                launchSingleTop = true
-                                restoreState    = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                tab.icon,
-                                contentDescription = stringResource(tab.labelRes),
-                                modifier = Modifier.size(22.dp),
-                            )
-                        },
-                        label = {
-                            Text(
-                                stringResource(tab.labelRes),
-                                fontSize   = 11.sp,
-                                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
-                                maxLines   = 1,
-                                overflow   = TextOverflow.Ellipsis,
-                            )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor   = CyberBgDeep,
-                            selectedTextColor   = CyberCyan,
-                            indicatorColor      = CyberCyan,
-                            unselectedIconColor = CyberTextMuted,
-                            unselectedTextColor = CyberTextMuted,
-                        ),
-                    )
-                }
-            }
+            AppNavigation(
+                tabs         = tabs,
+                currentRoute = currentRoute,
+                onTabSelected = { route ->
+                    navController.navigate(route) {
+                        popUpTo(Routes.Dashboard) { saveState = true }
+                        launchSingleTop = true
+                        restoreState    = true
+                    }
+                },
+            )
         },
     ) { padding ->
         MainShellNav(
@@ -193,10 +156,10 @@ private fun MainShellNav(
         navController       = navController,
         startDestination    = Routes.Dashboard,
         modifier            = Modifier.padding(padding),
-        enterTransition     = { fadeIn(tween(200)) },
-        exitTransition      = { fadeOut(tween(200)) },
-        popEnterTransition  = { fadeIn(tween(200)) },
-        popExitTransition   = { fadeOut(tween(200)) },
+        enterTransition     = { fadeIn(tween(220)) },
+        exitTransition      = { fadeOut(tween(220)) },
+        popEnterTransition  = { fadeIn(tween(220)) },
+        popExitTransition   = { fadeOut(tween(220)) },
     ) {
         composable(Routes.Dashboard) {
             DashboardScreen(
@@ -209,7 +172,7 @@ private fun MainShellNav(
                 onRefreshPermissions        = onRefreshPermissions,
             )
         }
-        composable(Routes.AiChat)   { AiChatScreen() }
+        composable(Routes.Chat) { AiChatScreen() }
         composable(Routes.Settings) {
             SettingsScreen(
                 onOpenPrivacyPolicy   = onOpenPrivacyPolicy,
